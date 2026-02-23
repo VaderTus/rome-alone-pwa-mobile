@@ -1,0 +1,9 @@
+﻿{
+  "name": "Rome Alone Mobile",
+  "short_name": "RomeAlone",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f6feb",
+  "icons": []
+}

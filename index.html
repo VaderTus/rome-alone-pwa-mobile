@@ -1,0 +1,41 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rome Alone Mobile</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>🏛 Rome Alone Mobile (PWA v1)</h1>
+    <div class="row">
+      <button id="btnNew">新开一局</button>
+      <button id="btnUndo">撤销一步</button>
+      <button id="btnExport">导出日志JSON</button>
+    </div>
+  </header>
+
+  <section class="panel" id="statePanel"></section>
+
+  <section class="panel">
+    <h2>手牌（3选1）</h2>
+    <div id="handArea" class="cards"></div>
+  </section>
+
+  <section class="panel">
+    <h2>操作</h2>
+    <div id="actionArea"></div>
+    <button id="btnConfirm" disabled>确认执行</button>
+    <div id="msg"></div>
+  </section>
+
+  <section class="panel">
+    <h2>回合历史</h2>
+    <div id="historyArea" class="history"></div>
+  </section>
+
+  <script src="./app.js"></script>
+</body>
+</html>
