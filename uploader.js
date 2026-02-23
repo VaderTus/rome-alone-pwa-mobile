@@ -1,12 +1,11 @@
-// ===== Supabase 上传器（Phase 1） =====
-// TODO: 替换为你的 Supabase 项目配置
+// ===== Supabase 上传器（Phase 1）=====
 const SUPABASE_URL = "https://nrwfiocjkwqmfthdydeu.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Ta2S-07WvkElnhChbmcvlw_ywJTmhV5";
 const TABLE_NAME = "rome_highscores";
 
 const QUEUE_KEY = "rome_upload_queue_v1";
-const AUTO_UPLOAD_KEY = "rome_auto_upload_v1";        // "1" or "0"
-const SCORE_THRESHOLD_KEY = "rome_upload_min_score_v1"; // int
+const AUTO_UPLOAD_KEY = "rome_auto_upload_v1";
+const SCORE_THRESHOLD_KEY = "rome_upload_min_score_v1";
 
 function getQueue() {
   try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || "[]"); }
