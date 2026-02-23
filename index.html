@@ -8,33 +8,51 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header>
-    <h1>🏛 Rome Alone Mobile (PWA v1)</h1>
+  <header class="topbar">
+    <h1>🏛 Rome Alone Mobile</h1>
     <div class="row">
       <button id="btnNew">新开一局</button>
       <button id="btnUndo">撤销一步</button>
       <button id="btnExport">导出日志JSON</button>
+      <button id="btnToggleMonument">纪念物说明</button>
     </div>
   </header>
 
-  <section class="panel" id="statePanel"></section>
+  <div class="layout">
+    <main>
+      <section class="panel" id="statePanel"></section>
 
-  <section class="panel">
-    <h2>手牌（3选1）</h2>
-    <div id="handArea" class="cards"></div>
-  </section>
+      <section class="panel">
+        <h2>地图（点击选择征服/失去城市）</h2>
+        <div id="mapArea" class="map-wrap"></div>
+        <div class="small">
+          左侧3城=文化城（C1~C3），右侧3城=工业城（I1~I3），中央=Rome
+        </div>
+      </section>
 
-  <section class="panel">
-    <h2>操作</h2>
-    <div id="actionArea"></div>
-    <button id="btnConfirm" disabled>确认执行</button>
-    <div id="msg"></div>
-  </section>
+      <section class="panel">
+        <h2>手牌（3选1）</h2>
+        <div id="handArea" class="cards"></div>
+      </section>
 
-  <section class="panel">
-    <h2>回合历史</h2>
-    <div id="historyArea" class="history"></div>
-  </section>
+      <section class="panel">
+        <h2>操作区</h2>
+        <div id="actionArea" class="row"></div>
+        <button id="btnConfirm" class="primary" disabled>确认执行</button>
+        <div id="msg"></div>
+      </section>
+
+      <section class="panel">
+        <h2>回合历史</h2>
+        <div id="historyArea" class="history"></div>
+      </section>
+    </main>
+
+    <aside id="monumentPanel" class="panel side hide">
+      <h2>纪念物说明</h2>
+      <div id="monumentInfo"></div>
+    </aside>
+  </div>
 
   <script src="./app.js"></script>
 </body>
