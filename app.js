@@ -181,7 +181,6 @@ function applyActionCore(a){
   }
 
   if(a.kind==="Conquest"){
-    // 延后到点城市时执行
     return {type:"need_city_pick"};
   }
 
@@ -192,17 +191,15 @@ function applyConquestToCity(cityId){
   const need = occupiedRegions();
   pay(0,need,0);
   state.cities[cityId]=true;
-
   if(cityId.startsWith("C")) gainWithTriggers({Culture:1});
   else gainWithTriggers({Industry:1});
-
   hand.forEach(x=>state.discard.push(x));
 }
 
 function startInvasionIfNeeded(){
   if(state.deck.length>0 || state.inv>=3) return false;
-
   const inv = INVASIONS[state.inv];
+
   if(colosseumActive()){
     state.inv++;
     state.deck = shuffle(state.discard);
@@ -213,11 +210,8 @@ function startInvasionIfNeeded(){
   const can = canPay(0,inv.pay,0);
   pendingInvasion = {idx:state.inv, pay:inv.pay, lose:inv.lose, canPay:can, loseLeft:inv.lose};
 
-  if(can){
-    uiMode = "invasion_choice"; // 玩家选择支付或失去城市
-  } else {
-    uiMode = "choose_lose_city"; // 被迫失去
-  }
+  if(can) uiMode = "invasion_choice";
+  else uiMode = "choose_lose_city";
   return true;
 }
 
@@ -239,10 +233,7 @@ function finishInvasionByLoseDone(){
 }
 
 function loseOneCity(cityId){
-  if(state.cities[cityId]){
-    state.cities[cityId]=false;
-    return true;
-  }
+  if(state.cities[cityId]){ state.cities[cityId]=false; return true; }
   return false;
 }
 
@@ -261,7 +252,6 @@ function gameOver(){ return state.lost || state.inv>=3; }
 function score(){
   if(state.lost) return 0;
   let total = occupiedRegions();
-
   for(const bid of state.built){
     const b=BUILDINGS[bid];
     if(b?.gp) total += b.gp;
@@ -396,7 +386,6 @@ function renderActions(){
     return;
   }
 
-  // normal
   legal.forEach((a,idx)=>{
     const c=cardById(a.card_id);
     const b=document.createElement("button");
@@ -436,17 +425,35 @@ function render(){
   renderHistory();
 }
 
+// ===== 上传UI =====
+function bindUploadUI(){
+  const sw = document.getElementById("autoUploadSwitch");
+  const th = document.getElementById("uploadThreshold");
+  const btn = document.getElementById("btnFlushUpload");
+  const status = document.getElementById("uploadStatus");
+
+  if (!window.RomeUploader || !sw || !th || !btn) return;
+
+  sw.checked = window.RomeUploader.getAutoUploadEnabled();
+  th.value = window.RomeUploader.getScoreThreshold();
+
+  sw.onchange = () => window.RomeUploader.setAutoUploadEnabled(sw.checked);
+  th.onchange = () => {
+    const v = parseInt(th.value || "14", 10);
+    window.RomeUploader.setScoreThreshold(Number.isFinite(v) ? v : 14);
+  };
+  btn.onclick = () => window.RomeUploader.flushQueue((m)=>{ if(status) status.textContent = m; });
+}
+
 // ===== 交互 =====
 function onCityClick(cityId){
   if(uiMode==="choose_conquest_city"){
     if(state.cities[cityId]){ setMsg("该城市已占领，不能再次征服", false); return; }
 
-    // 执行征服动作
     const before = snap();
     applyConquestToCity(cityId);
     const action = clone(pendingConquestAction);
 
-    // 处理入侵或下一回合
     const invasionPending = startInvasionIfNeeded();
     const after = snap();
 
@@ -474,14 +481,11 @@ function onCityClick(cityId){
     pendingInvasion.loseLeft -= 1;
 
     if(pendingInvasion.loseLeft <= 0){
-      // 失城完成 -> 入侵结算完成
-      if(!state.rome && occupiedRegions()<=0) state.lost=true;
       state.inv++;
       state.deck = shuffle(state.discard);
       state.discard = [];
       pendingInvasion = null;
       uiMode = "normal";
-
       if(!gameOver()) nextTurn(); else render();
     } else {
       setMsg(`还需失去 ${pendingInvasion.loseLeft} 座城市`, false);
@@ -539,15 +543,19 @@ function onUndo(){
   render();
 }
 
-function onExport(){
-  const payload = {
+function buildPayload(){
+  return {
     source: "mobile_pwa",
-    app_version: "pwa_v2_map",
+    app_version: "pwa_v2_map_upload",
     session_id: sessionId,
     created_at: new Date().toISOString(),
     final_summary: { score: score(), lost: state.lost, turns: state.turn, invasions_resolved: state.inv },
     records: trace
   };
+}
+
+function onExport(){
+  const payload = buildPayload();
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
@@ -555,6 +563,12 @@ function onExport(){
   a.click();
   URL.revokeObjectURL(a.href);
   setMsg("日志已导出 JSON", true);
+
+  // 自动上传：导出时也尝试入队并上传
+  if(window.RomeUploader && window.RomeUploader.getAutoUploadEnabled()){
+    window.RomeUploader.enqueueIfQualified(payload, setMsg);
+    window.RomeUploader.flushQueue(setMsg);
+  }
 }
 
 function bindEvents(){
@@ -574,4 +588,5 @@ if("serviceWorker" in navigator){
 }
 
 bindEvents();
+bindUploadUI();
 initGame();
