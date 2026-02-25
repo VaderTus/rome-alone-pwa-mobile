@@ -2,65 +2,74 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rome Alone Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Rome Alone Coach</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./styles.css">
-  <style>
-    /* 仅增加一个高亮样式，不改动其他 */
-    .ai-highlight {
-      background-color: #fffde7 !important;
-      border: 2px solid #ffcc00 !important;
-      box-shadow: 0 0 8px #ffcc00;
-    }
-  </style>
 </head>
 <body>
-  <header class="topbar">
-    <h1>🏛 Rome Alone Mobile</h1>
-    <div class="row">
-      <button id="btnNew">新开一局</button>
-      <button id="btnUndo">撤销一步</button>
-      <button id="btnExport">导出日志JSON</button>
-      <button id="btnToggleMonument">纪念物说明</button>
+  <div class="topbar">
+    <h1>🏛 Rome Alone</h1>
+    <div>
+      <button id="btnNew">重开</button>
+      <button id="btnExport">导出</button>
     </div>
+  </div>
 
-    <div class="row small" style="margin-top:10px;">
-      <label><input id="aiCoachSwitch" type="checkbox"> 开启 AI 教练 ✨</label> | 
-      自动上传 (>= <input id="uploadThreshold" type="number" value="14" style="width:40px;">) 
-      <input id="autoUploadSwitch" type="checkbox" checked>
-      <button id="btnFlushUpload">立即上传</button>
-      <span id="uploadStatus"></span>
-    </div>
-  </header>
-
-  <div class="layout">
+  <div class="layout-grid">
+    <!-- 左栏：游戏主区域 -->
     <main>
-      <section class="panel" id="statePanel"></section>
       <section class="panel">
-        <h2>地图（点击选择征服/失去城市）</h2>
-        <div id="mapArea" class="map-wrap"></div>
+        <h2>🗺️ 帝国版图</h2>
+        <div id="mapArea"></div>
       </section>
+
       <section class="panel">
-        <h2>手牌（3选1）</h2>
-        <div id="handArea" class="cards"></div>
+        <h2>🎴 当前手牌</h2>
+        <div id="handArea" class="hand-grid"></div>
       </section>
+
       <section class="panel">
-        <h2>操作区</h2>
-        <div id="actionArea" class="row"></div>
-        <button id="btnConfirm" class="primary" disabled>确认执行</button>
-        <div id="msg"></div>
-      </section>
-      <section class="panel">
-        <h2>回合历史</h2>
-        <div id="historyArea" class="history"></div>
+        <h2>⚡ 执行操作</h2>
+        <div id="actionArea"></div>
+        <button id="btnConfirm" class="primary" style="width:100%; margin-top:10px; padding:12px;" disabled>确认执行</button>
+        <div id="msg" style="margin-top:8px; font-weight:bold; color:#d32f2f;"></div>
       </section>
     </main>
-    <aside id="monumentPanel" class="panel side hide">
-      <h2>纪念物说明</h2>
-      <div id="monumentInfo"></div>
+
+    <!-- 右栏：状态与控制 -->
+    <aside>
+      <section class="panel" style="background:#e3f2fd; border:1px solid #90caf9;">
+        <h2>📊 实时状态</h2>
+        <div id="statePanel"></div>
+      </section>
+
+      <section class="panel">
+        <h2>🤖 AI 教练</h2>
+        <label style="display:flex; align-items:center; cursor:pointer; margin-bottom:10px;">
+          <input id="aiCoachSwitch" type="checkbox" style="width:18px; height:18px; margin-right:8px;">
+          <b>开启实时建议</b>
+        </label>
+        <div style="font-size:12px; color:#666;">
+          自动上传 (≥<input id="uploadThreshold" type="number" value="14" style="width:30px">分)
+          <input id="autoUploadSwitch" type="checkbox" checked>
+        </div>
+        <button id="btnFlushUpload" style="width:100%; margin-top:5px; font-size:12px;">检查上传队列</button>
+        <div id="uploadStatus" style="font-size:11px; margin-top:5px; color:#1f6feb;"></div>
+      </section>
+
+      <section class="panel">
+        <h2>📜 回合历史 <button id="btnUndo" style="float:right; padding:2px 8px; font-size:12px;">撤销</button></h2>
+        <div id="historyArea" class="history-list"></div>
+      </section>
+
+      <section class="panel">
+        <button id="btnToggleMonument" style="width:100%;">📖 纪念物说明</button>
+        <div id="monumentInfo" style="display:none; margin-top:10px;"></div>
+      </section>
     </aside>
   </div>
+
   <script src="./uploader.js"></script>
   <script src="./app.js"></script>
 </body>
