@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Rome Alone Coach</title>
-  <link rel="manifest" href="./manifest.json">
+  <title>Rome Alone AI Coach</title>
   <link rel="stylesheet" href="./styles.css">
   <style>
-    .ai-best { border: 2px solid #ffcc00 !important; background: #fffde7 !important; }
-    .map-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
-    .action-btn { margin: 2px; padding: 10px; font-size: 14px; }
-    th, td { padding: 8px; text-align: left; }
+    .ai-best { border: 3px solid #ffcc00 !important; background: #fffde7 !important; transform: scale(1.05); }
+    .map-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0; }
+    .city { padding: 15px 5px; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; }
+    .city.occupied { background: #4caf50; color: white; }
+    .city.pickable { border: 2px dashed #2196f3; animation: pulse 1s infinite; }
+    .rome { grid-column: 2; padding: 20px 5px; background: #eee; border-radius: 50%; text-align: center; font-weight: bold; }
+    .rome.lost { background: #f44336; color: white; }
+    .action-btn { display: block; width: 100%; margin: 5px 0; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: white; text-align: left; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <h2>🏛 策略教练版</h2>
-    <div class="row">
-      <button onclick="location.reload()">🔄 重开</button>
-      <button id="btnExport">📥 导出</button>
-    </div>
+  <div class="topbar" style="display:flex; justify-content: space-between; align-items: center; padding: 10px; background: #fff; border-bottom: 1px solid #ddd;">
+    <h2 style="margin:0">🏛 策略教练版</h2>
+    <button onclick="location.reload()">🔄 重开</button>
   </div>
 
-  <div id="statePanel" class="panel"></div>
-  <div id="mapArea" class="panel"></div>
-  <div id="handArea" class="cards"></div>
+  <div id="statePanel" class="panel" style="background:#e3f2fd; padding:10px; border-radius:8px; margin:10px 0;"></div>
+  
+  <div class="panel">
+    <div id="mapArea"></div>
+  </div>
+
+  <div id="handArea" class="cards" style="display:flex; gap:5px; margin:10px 0;"></div>
 
   <div class="panel">
     <div id="actionArea"></div>
-    <button id="btnConfirm" class="primary" style="width:100%; margin-top:10px;" onclick="onConfirm()">确认选择</button>
+    <button id="btnConfirm" class="primary" style="width:100%; padding:15px; font-size:18px; border-radius:10px; margin-top:10px;" disabled onclick="onConfirm()">🚀 确认执行</button>
   </div>
 
-  <div id="historyArea" class="panel">
-    <p class="small">AI 建议已用 <span style="background:#fffde7; border:1px solid #ffcc00;">黄色</span> 标出</p>
+  <div id="historyArea" class="panel" style="font-size:12px; color:#666;">
+    💡 黄色高亮按钮为 AI 推荐动作
   </div>
 
   <script src="./uploader.js"></script>
