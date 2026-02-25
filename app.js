@@ -1,7 +1,7 @@
-﻿// ===== 1. AI 黄金权重 (V5 Final) =====
+﻿// ===== AI 黄金权重 =====
 const GOLDEN_WEIGHTS = { amphi: 765, senate: 581, arc: 418, pan: 204, conq_base: 241, conq_arc: 355, trib: 65, top_cul: 35, top_mil: 23, top_ind: 21 };
 
-// ===== 2. 基础数据 =====
+// ===== 基础数据 =====
 const CARDS = [
   {id:"C01",name:"凯旋雕塑",class:"Building",top:{c:1,m:1,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_KaiXuanDiaoSu"}},
   {id:"C02",name:"帝国引水道",class:"Building",top:{c:1,m:1,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_DiGuoYinShuiDao"}},
@@ -43,12 +43,10 @@ const BUILDINGS = {
 const CITY_IDS = ["C1","C2","C3","I1","I2","I3"];
 const INVASIONS = [{pay:2,lose:1},{pay:3,lose:1},{pay:5,lose:2}];
 
-// ===== 3. 工具函数 =====
 function cardById(id){ return CARDS.find(c=>c.id===id); }
 function clone(x){ return JSON.parse(JSON.stringify(x)); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-// ===== 4. 游戏引擎 =====
 let state, hand, legal, pending, trace, undoStack, sessionId;
 let uiMode = "normal"; 
 let pendingConquestAction = null;
@@ -75,51 +73,13 @@ function nextTurn(){
   pending=null; uiMode="normal"; render();
 }
 
-function occupiedRegions(){ return (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length; }
-function senateActive(){ return state.mono["M_DiGuoGuangChang"]>=2; }
-function colosseumActive(){ return state.mono["M_LuoMaDouShouChang"]>=2; }
-
-function canPay(c,m,i){
-  if(state.industry<i) return false;
-  if(senateActive()) return (state.culture+state.military) >= (c+m);
-  return state.culture>=c && state.military>=m;
-}
-
-function pay(c,m,i){
-  state.industry -= i;
-  if(!senateActive()){ state.culture-=c; state.military-=m; return; }
-  let need=c+m;
-  while(need>0){
-    if(state.culture>=state.military && state.culture>0) state.culture--;
-    else if(state.military>0) state.military--;
-    else if(state.culture>0) state.culture--;
-    need--;
-  }
-}
-
-function addRes(type,amt){
-  const k = type==="Culture"?"culture":type==="Military"?"military":"industry";
-  const b = state[k]; state[k]=Math.min(9, state[k]+amt); return state[k]-b;
-}
-
-function gainWithTriggers(g){
-  let c=g.Culture||0, m=g.Military||0, i=g.Industry||0;
-  if(senateActive()){
-    let t=c+m; c=0; m=0;
-    while(t>0){ if(state.culture<=state.military)c++; else m++; t--; }
-  }
-  if(addRes("Culture",c)>0 && state.built.includes("B_YuanXingJingJiChang")) addRes("Culture",2);
-  if(addRes("Military",m)>0 && state.built.includes("B_JunTuanYaoSai")) addRes("Military",2);
-  if(addRes("Industry",i)>0 && state.built.includes("B_DiGuoJinKuang")) addRes("Industry",2);
-}
-
 function computeLegal(){
   legal = [];
   hand.forEach(cid => {
     const c = cardById(cid);
     legal.push({card_id:cid, mode:"top", kind:"TopResource", meta:{}});
     const b = c.bottom;
-    const curRegs = occupiedRegions();
+    const curRegs = (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length;
     if(b.type==="Conquest" && canPay(0,curRegs,0) && CITY_IDS.some(id=>!state.cities[id]))
       legal.push({card_id:cid, mode:"bottom", kind:"Conquest", meta:{}});
     else if(b.type==="Tribute") legal.push({card_id:cid, mode:"bottom", kind:"Tribute", meta:{target:b.target}});
@@ -130,8 +90,31 @@ function computeLegal(){
   });
 }
 
-// ===== 5. AI 教练逻辑 (修复版) =====
-// 返回最佳动作在 legal 数组中的索引
+function occupiedRegions(){ return (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length; }
+function senateActive(){ return state.mono["M_DiGuoGuangChang"]>=2; }
+function colosseumActive(){ return state.mono["M_LuoMaDouShouChang"]>=2; }
+
+function canPay(c,m,i){
+  if(state.industry<i) return false;
+  return senateActive() ? (state.culture+state.military >= c+m) : (state.culture>=c && state.military>=m);
+}
+function pay(c,m,i){
+  state.industry -= i;
+  if(!senateActive()){ state.culture-=c; state.military-=m; return; }
+  let need=c+m;
+  while(need>0){ if(state.culture>=state.military && state.culture>0) state.culture--; else if(state.military>0) state.military--; else state.culture--; need--; }
+}
+function addRes(type,amt){ const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; const b=state[k]; state[k]=Math.min(9,state[k]+amt); return state[k]-b; }
+function gainWithTriggers(g){
+  let c=g.Culture||0,m=g.Military||0,i=g.Industry||0;
+  if(senateActive()){ let t=c+m; c=0; m=0; while(t>0){ if(state.culture<=state.military)c++; else m++; t--; } }
+  const gc=addRes("Culture",c), gm=addRes("Military",m), gi=addRes("Industry",i);
+  if(gc>0 && state.built.includes("B_YuanXingJiChang")) addRes("Culture",2);
+  if(gm>0 && state.built.includes("B_JunTuanYaoSai")) addRes("Military",2);
+  if(gi>0 && state.built.includes("B_DiGuoJinKuang")) addRes("Industry",2);
+}
+
+// ===== 关键修复：返回最佳动作的 INDEX =====
 function getAIBestIndex() {
   if (!legal || legal.length === 0) return -1;
   const idx = Math.min(state.inv + 1, 3);
@@ -180,13 +163,23 @@ function getAIBestIndex() {
     }
     return sc;
   });
-  return scores.indexOf(Math.max(...scores));
+  
+  // 找到最高分对应的索引
+  let maxScore = -999999;
+  let bestIdx = -1;
+  for(let i=0; i<scores.length; i++){
+    if(scores[i] > maxScore){
+      maxScore = scores[i];
+      bestIdx = i;
+    }
+  }
+  return bestIdx;
 }
 
-// ===== 6. UI 渲染 (绝对保留原布局) =====
+// ===== UI 渲染 =====
 function render(){
-  // 获取教练开关状态
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
+  // 直接拿最佳动作的索引
   const bestIdx = coachOn ? getAIBestIndex() : -1;
 
   document.getElementById("statePanel").innerHTML = `
@@ -215,15 +208,17 @@ function render(){
   
   if(uiMode==="normal"){
     legal.forEach((a, i) => {
+      // 只要索引对上，就高亮
       const isBest = (i === bestIdx);
       const b = document.createElement("button");
       b.className = "action-btn";
       
-      // 强制内联样式，确保高亮生效
+      // 暴力内联样式，确保必须变黄
       if (isBest) {
         b.style.backgroundColor = "#fffde7";
-        b.style.border = "2px solid #ffcc00";
+        b.style.border = "3px solid #ffcc00";
         b.style.fontWeight = "bold";
+        b.style.boxShadow = "0 0 10px rgba(255,204,0,0.5)";
       }
       
       b.textContent = `${i+1}. ${cardById(a.card_id).name} - ${a.mode==="top"?"取资源":a.kind} ${isBest?'(✨ AI推荐)':''}`;
@@ -238,13 +233,13 @@ function render(){
   document.getElementById("historyArea").innerHTML = trace.map(t=>`T${t.turn}: ${t.event} (${t.after_score}分)`).join("<br>");
 }
 
-// ===== 7. 交互绑定 =====
+// 事件绑定
 function onCityClick(cityId){
   if(uiMode==="choose_conquest_city"){
     if(state.cities[cityId]) return;
     pushUndo();
     const before = clone(state);
-    pay(0, occupiedRegions(), 0);
+    pay(0, occupiedRegions()-1, 0); // 扣除之前预扣的费用
     state.cities[cityId]=true;
     cityId.startsWith("C") ? gainWithTriggers({Culture:1}) : gainWithTriggers({Industry:1});
     hand.forEach(x=>state.discard.push(x));
@@ -252,8 +247,7 @@ function onCityClick(cityId){
   } else if(uiMode==="choose_lose_city"){
     if(!state.cities[cityId]) return;
     state.cities[cityId]=false;
-    pendingInvasion.loseLeft--;
-    if(pendingInvasion.loseLeft<=0) finishInvasionStep();
+    if(--pendingInvasion.loseLeft <= 0) finishInvasionStep();
     render();
   }
 }
@@ -261,7 +255,7 @@ function onCityClick(cityId){
 function onConfirm(){
   if(!pending) return;
   pushUndo();
-  // 记录 AI 当时的选择（用于复盘）
+  // 记录 AI 选择用于导出，但不影响逻辑
   const bestIdx = getAIBestIndex();
   const aiSug = bestIdx >= 0 ? legal[bestIdx] : null;
   
@@ -272,6 +266,12 @@ function onConfirm(){
     gainWithTriggers({Culture:card.top.c, Military:card.top.m, Industry:card.top.i});
     hand.forEach(x=>state.discard.push(x));
     finishMove(before, "上半资源", aiSug);
+  } else if(pending.kind==="Conquest"){
+    pay(0, occupiedRegions(), 0); // 征服先扣钱
+    pendingConquestAction = pending;
+    uiMode = "choose_conquest_city";
+    render();
+    return;
   } else if(pending.kind==="Tribute"){
     const amt = occupiedRegions();
     pending.meta.target==="Culture" ? gainWithTriggers({Culture:amt}) : gainWithTriggers({Industry:amt});
@@ -287,10 +287,6 @@ function onConfirm(){
     state.mono[pending.meta.monument_id]++;
     hand.forEach(x=>state.discard.push(x));
     finishMove(before, "纪念物", aiSug);
-  } else if(pending.kind==="Conquest"){
-    pendingConquestAction = pending;
-    uiMode = "choose_conquest_city";
-    render();
   }
 }
 
@@ -328,14 +324,13 @@ function calcScore(){ if(state.lost) return 0; let s = occupiedRegions(); state.
 
 function onExport(){
   const payload = { source: "mobile_pwa", session_id: sessionId, final_summary: { score: calcScore(), lost: state.lost }, records: trace };
-  // 这里保留自动上传逻辑
   if(window.RomeUploader && window.RomeUploader.getAutoUploadEnabled()){
     window.RomeUploader.enqueueIfQualified(payload, setMsg);
     window.RomeUploader.flushQueue(setMsg);
   }
   const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`trace_${sessionId}.json`; a.click();
-  setMsg("日志已导出");
+  setMsg("日志已导出 JSON");
 }
 
 document.getElementById("btnNew").onclick = initGame;

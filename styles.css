@@ -16,3 +16,10 @@ body{font-family:sans-serif;background:var(--bg);margin:10px}
 .sep{height:1px;background:var(--line);margin:5px 0}
 button{padding:8px;border:1px solid #aaa;border-radius:5px;background:#fff;cursor:pointer}
 button.primary{background:var(--blue);color:#fff;border:none}
+/* ...其他样式... */
+
+.ai-suggested-btn {
+    background-color: #fffde7 !important;
+    border: 3px solid #ffcc00 !important;
+    font-weight: bold !important;
+  }
