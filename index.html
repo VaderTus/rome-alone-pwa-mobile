@@ -2,39 +2,17 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rome Alone Mobile</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./styles.css">
   <style>
-    /* AI 高亮样式：黄色背景 + 粗边框 */
+    /* 仅增加一个高亮样式，不改动其他 */
     .ai-highlight {
-      background-color: #fff9c4 !important; /* 淡黄色 */
-      border: 3px solid #ffc107 !important; /* 金色边框 */
-      font-weight: bold;
-      position: relative;
+      background-color: #fffde7 !important;
+      border: 2px solid #ffcc00 !important;
+      box-shadow: 0 0 8px #ffcc00;
     }
-    /* 给高亮按钮加一个小星星图标 */
-    .ai-highlight::after {
-      content: "💡推荐";
-      position: absolute;
-      right: 10px;
-      font-size: 12px;
-      color: #d84315;
-    }
-    
-    /* 地图样式保持原样 */
-    .map-wrap { display: grid; grid-template-columns: 1fr 100px 1fr; gap: 10px; text-align: center; align-items: center; }
-    .map-col { display: flex; flex-direction: column; gap: 5px; }
-    .city { padding: 12px 5px; border: 1px solid #d9dce2; border-radius: 6px; background: #fff; font-weight: bold; }
-    .city.culture { border-left: 5px solid #7a56ff; }
-    .city.industry { border-left: 5px solid #e68a00; }
-    .city.occupied { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
-    .city.pickable { border: 2px dashed #1f6feb; cursor: pointer; animation: pulse 1.5s infinite; }
-    .rome { font-weight: bold; padding: 25px 5px; background: #eee; border-radius: 50%; border: 2px solid #ccc; }
-    .rome.lost { background: #ffcdd2; border-color: #c62828; color: #c62828; }
-    .action-btn { width: 100%; text-align: left; padding: 12px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 8px; background: white; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
   </style>
 </head>
 <body>
@@ -47,16 +25,11 @@
       <button id="btnToggleMonument">纪念物说明</button>
     </div>
 
-    <!-- 这里的 AI 开关 -->
-    <div class="row small" style="margin-top:10px; align-items: center; background: #fff; padding: 8px; border-radius: 8px;">
-      <label style="display:flex; align-items:center; cursor:pointer;">
-        <input id="aiCoachSwitch" type="checkbox" style="width:20px; height:20px; margin-right:5px;"> 
-        <b>开启 AI 教练</b>
-      </label>
-      <span style="margin: 0 10px; color:#ddd">|</span>
-      <span>自动上传 (>= <input id="uploadThreshold" type="number" value="14" style="width:40px;">)</span>
+    <div class="row small" style="margin-top:10px;">
+      <label><input id="aiCoachSwitch" type="checkbox"> 开启 AI 教练 ✨</label> | 
+      自动上传 (>= <input id="uploadThreshold" type="number" value="14" style="width:40px;">) 
       <input id="autoUploadSwitch" type="checkbox" checked>
-      <button id="btnFlushUpload" style="padding:4px 8px; font-size:12px;">立即上传</button>
+      <button id="btnFlushUpload">立即上传</button>
       <span id="uploadStatus"></span>
     </div>
   </header>
@@ -64,37 +37,30 @@
   <div class="layout">
     <main>
       <section class="panel" id="statePanel"></section>
-
       <section class="panel">
         <h2>地图（点击选择征服/失去城市）</h2>
-        <div id="mapArea"></div>
+        <div id="mapArea" class="map-wrap"></div>
       </section>
-
       <section class="panel">
-        <h2>手牌</h2>
+        <h2>手牌（3选1）</h2>
         <div id="handArea" class="cards"></div>
       </section>
-
       <section class="panel">
         <h2>操作区</h2>
-        <div id="actionArea"></div>
-        <!-- 确认按钮 -->
-        <button id="btnConfirm" class="primary" style="width:100%; margin-top:10px; padding:15px; font-size:18px;" disabled>确认执行</button>
+        <div id="actionArea" class="row"></div>
+        <button id="btnConfirm" class="primary" disabled>确认执行</button>
         <div id="msg"></div>
       </section>
-
       <section class="panel">
         <h2>回合历史</h2>
         <div id="historyArea" class="history"></div>
       </section>
     </main>
-
     <aside id="monumentPanel" class="panel side hide">
       <h2>纪念物说明</h2>
       <div id="monumentInfo"></div>
     </aside>
   </div>
-
   <script src="./uploader.js"></script>
   <script src="./app.js"></script>
 </body>
