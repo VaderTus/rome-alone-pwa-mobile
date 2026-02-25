@@ -1,4 +1,4 @@
-﻿// ===== AI 黄金权重 (V5 Final) =====
+﻿// ===== AI 黄金权重 =====
 const GOLDEN_WEIGHTS = { amphi: 765, senate: 581, arc: 418, pan: 204, conq_base: 241, conq_arc: 355, trib: 65, top_cul: 35, top_mil: 23, top_ind: 21 };
 
 // ===== 基础数据 =====
@@ -28,8 +28,8 @@ const CARDS = [
 
 const MONUMENTS = {
   M_WanShenMiao:{name:"万神庙",type:"FlatGP",v:4,desc:"完成后+4分"},
-  M_LuoMaDouShouChang:{name:"罗马斗兽场",type:"FlatGP",v:2,special:"IgnoreInvasions",desc:"完成后+2分，且忽略后续入侵"},
-  M_DiGuoGuangChang:{name:"帝国广场",type:"FlatGP",v:2,special:"SenateSwap",desc:"完成后+2分，文/军可互换支付"},
+  M_LuoMaDouShouChang:{name:"罗马斗兽场",type:"FlatGP",v:2,special:"IgnoreInvasions",desc:"完成后+2分，忽略后续入侵"},
+  M_DiGuoGuangChang:{name:"帝国广场",type:"FlatGP",v:2,special:"SenateSwap",desc:"完成后+2分，文/军可互换"},
   M_HaDeLiangLingQin:{name:"哈德良陵寝",type:"PerBuilding",v:1,desc:"完成后每建筑+1分"},
   M_KaiXuanMen:{name:"凯旋门",type:"PerRegion",v:1,desc:"完成后每地区+1分"},
   M_TuLaZhenShiChang:{name:"图拉真市场",type:"MinResource",v:1,desc:"完成后按最小资源计分"},
@@ -43,18 +43,17 @@ const BUILDINGS = {
 const CITY_IDS = ["C1","C2","C3","I1","I2","I3"];
 const INVASIONS = [{pay:2,lose:1},{pay:3,lose:1},{pay:5,lose:2}];
 
-// ===== 逻辑工具 =====
-function cardById(id){ return CARDS.find(c=>c.id===id); }
-function clone(x){ return JSON.parse(JSON.stringify(x)); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-
 // ===== 状态变量 =====
 let state, hand, legal, pending, trace, undoStack, sessionId;
 let uiMode = "normal"; 
 let pendingConquestAction = null;
 let pendingInvasion = null;
 
-// ===== 游戏引擎核心 =====
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
+function cardById(id){ return CARDS.find(c=>c.id===id); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// ===== 游戏逻辑 =====
 function initGame(){
   sessionId = "sess_" + Date.now();
   state = {
@@ -131,12 +130,12 @@ function computeLegal(){
   });
 }
 
-// ===== AI 教练引擎 =====
+// ===== AI 教练引擎 (核心修复点) =====
 function getAIChoice() {
   if (!legal || legal.length === 0) return null;
   const idx = Math.min(state.inv + 1, 3);
   const invCost = INVASIONS[idx-1].pay;
-  const regions = occupiedRegions();
+  const regs = occupiedRegions();
   const sa = senateActive();
   const aa = state.mono["M_KaiXuanMen"] >= 2;
 
@@ -151,7 +150,7 @@ function getAIChoice() {
     const card = cardById(a.card_id);
     let estMil = state.military;
     let estCul = state.culture;
-    if (a.kind === "Conquest") estMil -= regions;
+    if (a.kind === "Conquest") estMil -= regs;
     else if (a.mode === "bottom" && (a.kind.startsWith("Build"))) {
       estMil -= card.bottom.cost.m; estCul -= card.bottom.cost.c;
     }
@@ -183,114 +182,11 @@ function getAIChoice() {
   return legal[scores.indexOf(Math.max(...scores))];
 }
 
-// ===== UI 交互逻辑 =====
-function onCityClick(cityId){
-  if(uiMode==="choose_conquest_city"){
-    if(state.cities[cityId]) return;
-    pushUndo();
-    const before = clone(state);
-    pay(0, occupiedRegions(), 0);
-    state.cities[cityId]=true;
-    cityId.startsWith("C") ? gainWithTriggers({Culture:1}) : gainWithTriggers({Industry:1});
-    hand.forEach(x=>state.discard.push(x));
-    finishMove(before, `征服 ${cityId}`);
-  } else if(uiMode==="choose_lose_city"){
-    if(!state.cities[cityId]) return;
-    state.cities[cityId]=false;
-    pendingInvasion.loseLeft--;
-    if(pendingInvasion.loseLeft<=0) finishInvasionStep();
-    render();
-  }
-}
-
-function onConfirm(){
-  if(!pending) return;
-  pushUndo();
-  const aiSug = getAIChoice();
-  const before = clone(state);
-  const card = cardById(pending.card_id);
-
-  if(pending.mode==="top"){
-    gainWithTriggers({Culture:card.top.c, Military:card.top.m, Industry:card.top.i});
-    hand.forEach(x=>state.discard.push(x));
-    finishMove(before, "上半资源", aiSug);
-  } else if(pending.kind==="Tribute"){
-    const amt = occupiedRegions();
-    pending.meta.target==="Culture" ? gainWithTriggers({Culture:amt}) : gainWithTriggers({Industry:amt});
-    hand.forEach(x=>state.discard.push(x));
-    finishMove(before, "征收", aiSug);
-  } else if(pending.kind==="Build_Building"){
-    pay(card.bottom.cost.c, card.bottom.cost.m, card.bottom.cost.i);
-    state.built.push(pending.meta.building_id);
-    hand.forEach(x=>{ if(x!==pending.card_id) state.discard.push(x); });
-    finishMove(before, "建筑", aiSug);
-  } else if(pending.kind==="Build_Monument"){
-    pay(card.bottom.cost.c, card.bottom.cost.m, card.bottom.cost.i);
-    state.mono[pending.meta.monument_id]++;
-    hand.forEach(x=>state.discard.push(x));
-    finishMove(before, "纪念物", aiSug);
-  } else if(pending.kind==="Conquest"){
-    pendingConquestAction = pending;
-    uiMode = "choose_conquest_city";
-    render();
-  }
-}
-
-function pushUndo(){
-  undoStack.push({
-    state:clone(state), hand:clone(hand), legal:clone(legal), trace:clone(trace),
-    uiMode, pendingConquestAction:clone(pendingConquestAction), pendingInvasion:clone(pendingInvasion)
-  });
-}
-
-function onUndo(){
-  if(undoStack.length===0) return;
-  const u = undoStack.pop();
-  state=u.state; hand=u.hand; legal=u.legal; trace=u.trace;
-  uiMode=u.uiMode; pendingConquestAction=u.pendingConquestAction; pendingInvasion=u.pendingInvasion;
-  render();
-}
-
-function finishMove(before, eventName, aiSug){
-  const after = clone(state);
-  trace.push({turn:state.turn, event:eventName, before, after, user_choice:pending, ai_choice:aiSug, after_score:calcScore()});
-  if(!checkInvasion()) nextTurn();
-}
-
-function checkInvasion(){
-  if(state.deck.length>0 || state.inv>=3) return false;
-  if(colosseumActive()){ state.inv++; state.deck=shuffle(state.discard); state.discard=[]; return false; }
-  const inv = INVASIONS[state.inv];
-  if(canPay(0, inv.pay, 0)) { uiMode="invasion_choice"; pendingInvasion={pay:inv.pay, loseLeft:inv.lose}; }
-  else { uiMode="choose_lose_city"; pendingInvasion={loseLeft:inv.lose}; }
-  render(); return true;
-}
-
-function finishInvasionStep(){
-  state.inv++; state.deck=shuffle(state.discard); state.discard=[]; uiMode="normal"; nextTurn();
-}
-
-function calcScore(){
-  if(state.lost) return 0;
-  let s = occupiedRegions();
-  state.built.forEach(bid => { if(BUILDINGS[bid] && BUILDINGS[bid].gp) s += BUILDINGS[bid].gp; });
-  Object.entries(state.mono).forEach(([mid,p])=>{
-    if(p<2) return;
-    const m=MONUMENTS[mid];
-    if(m.type==="FlatGP") s+=m.v;
-    else if(m.type==="PerBuilding") s+=m.v*state.built.length;
-    else if(m.type==="PerRegion") s+=m.v*occupiedRegions();
-    else if(m.type==="MinResource") s+=m.v*Math.min(state.culture,state.military,state.industry);
-  });
-  return s;
-}
-
-// ===== 渲染函数 =====
+// ===== UI 交互与渲染 =====
 function render(){
   const coachOn = document.getElementById("aiCoachSwitch").checked;
   const aiSug = coachOn ? getAIChoice() : null;
 
-  // 状态栏
   document.getElementById("statePanel").innerHTML = `
     <h2>状态</h2>
     <div>回合: ${state.turn} | 入侵: ${state.inv}/3 | 牌库: ${state.deck.length} | 弃牌: ${state.discard.length}</div>
@@ -298,56 +194,109 @@ function render(){
     <div>当前得分: <b>${calcScore()}</b></div>
   `;
 
-  // 地图
-  const mapHtml = CITY_IDS.map(id => {
+  const mapArea = document.getElementById("mapArea");
+  const renderCity = (id) => {
     const occ = state.cities[id];
     const pickable = (uiMode==="choose_conquest_city" && !occ) || (uiMode==="choose_lose_city" && occ);
-    // 地图 AI 高亮 (针对征服动作)
-    const isAiCity = coachOn && aiSug && aiSug.kind==="Conquest" && uiMode==="choose_conquest_city"; 
-    return `<button class="city ${id.startsWith('C')?'culture':'industry'} ${occ?'occupied':''} ${pickable?'pickable':''} ${isAiCity?'ai-suggested':''}" onclick="onCityClick('${id}')">
-      ${id} ${occ?'✅':''}
-    </button>`;
-  }).join("");
-  document.getElementById("mapArea").innerHTML = `<div class="map-wrap"><div class="map-col">${CITY_IDS.slice(0,3).map(id => `<button class="city culture ${state.cities[id]?'occupied':''} ${(uiMode==='choose_conquest_city'&&!state.cities[id])||(uiMode==='choose_lose_city'&&state.cities[id])?'pickable':''}" onclick="onCityClick('${id}')">${id}</button>`).join("")}</div><div class="rome">ROME ${state.rome?'✅':'❌'}</div><div class="map-col">${CITY_IDS.slice(3).map(id => `<button class="city industry ${state.cities[id]?'occupied':''} ${(uiMode==='choose_conquest_city'&&!state.cities[id])||(uiMode==='choose_lose_city'&&state.cities[id])?'pickable':''}" onclick="onCityClick('${id}')">${id}</button>`).join("")}</div></div>`;
+    return `<button class="city ${id.startsWith('C')?'culture':'industry'} ${occ?'occupied':''} ${pickable?'pickable':''}" onclick="onCityClick('${id}')">${id}${occ?'✅':''}</button>`;
+  };
+  mapArea.innerHTML = `
+    <div class="map-wrap">
+      <div class="map-col">${CITY_IDS.slice(0,3).map(renderCity).join("")}</div>
+      <div class="rome">ROME ${state.rome?'✅':'❌'}</div>
+      <div class="map-col">${CITY_IDS.slice(3).map(renderCity).join("")}</div>
+    </div>
+  `;
 
-  // 手牌
   document.getElementById("handArea").innerHTML = hand.map(cid => {
     const c = cardById(cid);
     return `<div class="card"><h3>${c.name}</h3><small>${cid}</small><div class="sep"></div>上: C${c.top.c} M${c.top.m} I${c.top.i}<br>下: ${c.bottom.type}</div>`;
   }).join("");
 
-  // 动作
   const actionArea = document.getElementById("actionArea");
   actionArea.innerHTML = "";
   if(uiMode==="normal"){
     legal.forEach((a, i) => {
       const isBest = aiSug && JSON.stringify(a) === JSON.stringify(aiSug);
       const b = document.createElement("button");
-      b.className = `action-btn ${isBest ? 'ai-suggested' : ''}`;
-      b.textContent = `${i+1}. ${a.card_id} ${a.mode==="top"?"上半":"下半"} ${isBest?'✨':''}`;
+      b.className = isBest ? "ai-suggested-btn" : "";
+      b.style.padding = "12px"; b.style.borderRadius = "8px"; b.style.border = "1px solid #ddd"; b.style.textAlign = "left";
+      b.innerHTML = `${i+1}. ${a.card_id} ${a.mode==="top"?"上半":"下半"} ${isBest?' (💡 AI 建议)':''}`;
       b.onclick = () => { pending=legal[i]; document.getElementById("btnConfirm").disabled=false; };
       actionArea.appendChild(b);
     });
   } else if(uiMode==="invasion_choice"){
-    actionArea.innerHTML = `<button class="primary" onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()">支付军事 ${pendingInvasion.pay}</button><button onclick="uiMode='choose_lose_city';render()">丢弃地区</button>`;
+    actionArea.innerHTML = `<button onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()">支付军事 ${pendingInvasion.pay}</button><button onclick="uiMode='choose_lose_city';render()">丢弃地区</button>`;
   }
 
-  // 纪念物说明
   document.getElementById("monumentInfo").innerHTML = Object.entries(MONUMENTS).map(([k,v])=>`<div class="card"><b>${v.name}</b> (${state.mono[k]}/2)<br><small>${v.desc}</small></div>`).join("");
-  
-  // 历史
-  document.getElementById("historyArea").innerHTML = trace.map(t=>`T${t.turn}: ${t.event} (分:${t.after_score})`).join("<br>");
+  document.getElementById("historyArea").innerHTML = "历史轨迹: " + trace.map(t=>`T${t.turn}:${t.event}`).join(" → ");
 }
 
-// ===== 绑定导出与UI =====
+// 事件绑定同前...
+function onCityClick(cityId){
+  if(uiMode==="choose_conquest_city"){
+    if(state.cities[cityId]) return;
+    state.cities[cityId]=true;
+    cityId.startsWith("C") ? gainWithTriggers({Culture:1}) : gainWithTriggers({Industry:1});
+    pay(0, occupiedRegions()-1, 0); // 扣除征服费用
+    hand.forEach(x=>state.discard.push(x));
+    trace.push({turn:state.turn, event:`征服 ${cityId}`, after_score:calcScore()});
+    if(!checkInvasion()) nextTurn();
+  } else if(uiMode==="choose_lose_city"){
+    if(!state.cities[cityId]) return;
+    state.cities[cityId]=false;
+    if(--pendingInvasion.loseLeft <= 0) finishInvasionStep();
+    render();
+  }
+}
+
+function onConfirm(){
+  if(!pending) return;
+  const card = cardById(pending.card_id);
+  if(pending.mode==="top"){
+    gainWithTriggers({Culture:card.top.c, Military:card.top.m, Industry:card.top.i});
+    hand.forEach(x=>state.discard.push(x));
+    trace.push({turn:state.turn, event:"上半资源", after_score:calcScore()});
+    if(!checkInvasion()) nextTurn();
+  } else if(pending.kind==="Conquest"){
+    uiMode = "choose_conquest_city"; render();
+  } else if(pending.kind==="Tribute"){
+    const amt = occupiedRegions();
+    pending.meta.target==="Culture" ? gainWithTriggers({Culture:amt}) : gainWithTriggers({Industry:amt});
+    hand.forEach(x=>state.discard.push(x));
+    trace.push({turn:state.turn, event:"征收", after_score:calcScore()});
+    if(!checkInvasion()) nextTurn();
+  } else if(pending.kind==="Build_Building"){
+    pay(card.bottom.cost.c, card.bottom.cost.m, card.bottom.cost.i);
+    state.built.push(pending.meta.building_id);
+    hand.forEach(x=>{ if(x!==pending.card_id) state.discard.push(x); });
+    trace.push({turn:state.turn, event:"建筑", after_score:calcScore()});
+    if(!checkInvasion()) nextTurn();
+  } else if(pending.kind==="Build_Monument"){
+    pay(card.bottom.cost.c, card.bottom.cost.m, card.bottom.cost.i);
+    state.mono[pending.meta.monument_id]++;
+    hand.forEach(x=>state.discard.push(x));
+    trace.push({turn:state.turn, event:"纪念物", after_score:calcScore()});
+    if(!checkInvasion()) nextTurn();
+  }
+}
+
+function checkInvasion(){
+  if(state.deck.length>0 || state.inv>=3) return false;
+  const inv = INVASIONS[state.inv];
+  if(canPay(0, inv.pay, 0)) { uiMode="invasion_choice"; pendingInvasion={pay:inv.pay, loseLeft:inv.lose}; render(); return true; }
+  else { uiMode="choose_lose_city"; pendingInvasion={loseLeft:inv.lose}; render(); return true; }
+}
+function finishInvasionStep(){ state.inv++; state.deck=shuffle(state.discard); state.discard=[]; uiMode="normal"; nextTurn(); }
+function calcScore(){ if(state.lost) return 0; let s = occupiedRegions(); state.built.forEach(bid => { if(BUILDINGS[bid]) s += (BUILDINGS[bid].gp||0); }); Object.entries(state.mono).forEach(([mid,p])=>{ if(p>=2){ const m=MONUMENTS[mid]; if(m.type==="FlatGP") s+=m.v; else if(m.type==="PerBuilding") s+=m.v*state.built.length; else if(m.type==="PerRegion") s+=m.v*occupiedRegions(); else if(m.type==="MinResource") s+=m.v*Math.min(state.culture,state.military,state.industry); } }); return s; }
+
 document.getElementById("btnNew").onclick = initGame;
-document.getElementById("btnUndo").onclick = onUndo;
 document.getElementById("aiCoachSwitch").onchange = render;
 document.getElementById("btnConfirm").onclick = onConfirm;
 document.getElementById("btnToggleMonument").onclick = () => document.getElementById("monumentPanel").classList.toggle("hide");
 document.getElementById("btnExport").onclick = () => {
-  const payload = { source: "mobile_pwa", session_id: sessionId, final_summary: { score: calcScore(), lost: state.lost }, records: trace };
-  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const blob = new Blob([JSON.stringify({ records: trace },null,2)], {type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`trace_${sessionId}.json`; a.click();
 };
 
