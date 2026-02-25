@@ -2,64 +2,37 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rome Alone Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Rome Alone Coach</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./styles.css">
+  <style>
+    .ai-best { border: 2px solid #ffcc00 !important; background: #fffde7 !important; }
+    .map-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+    .action-btn { margin: 2px; padding: 10px; font-size: 14px; }
+    th, td { padding: 8px; text-align: left; }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <h1>🏛 Rome Alone Mobile</h1>
+  <div class="topbar">
+    <h2>🏛 策略教练版</h2>
     <div class="row">
-      <button id="btnNew">新开一局</button>
-      <button id="btnUndo">撤销一步</button>
-      <button id="btnExport">导出日志JSON</button>
-      <button id="btnToggleMonument">纪念物说明</button>
+      <button onclick="location.reload()">🔄 重开</button>
+      <button id="btnExport">📥 导出</button>
     </div>
+  </div>
 
-    <div class="row small">
-      自动上传高分（>=
-      <input id="uploadThreshold" type="number" value="14" style="width:64px;"> 分）
-      <input id="autoUploadSwitch" type="checkbox" checked>
-      <button id="btnFlushUpload">立即上传队列</button>
-      <span id="uploadStatus"></span>
-    </div>
-  </header>
+  <div id="statePanel" class="panel"></div>
+  <div id="mapArea" class="panel"></div>
+  <div id="handArea" class="cards"></div>
 
-  <div class="layout">
-    <main>
-      <section class="panel" id="statePanel"></section>
+  <div class="panel">
+    <div id="actionArea"></div>
+    <button id="btnConfirm" class="primary" style="width:100%; margin-top:10px;" onclick="onConfirm()">确认选择</button>
+  </div>
 
-      <section class="panel">
-        <h2>地图（点击选择征服/失去城市）</h2>
-        <div id="mapArea" class="map-wrap"></div>
-        <div class="small">
-          左侧3城=文化城（C1~C3），右侧3城=工业城（I1~I3），中央=Rome
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>手牌（3选1）</h2>
-        <div id="handArea" class="cards"></div>
-      </section>
-
-      <section class="panel">
-        <h2>操作区</h2>
-        <div id="actionArea" class="row"></div>
-        <button id="btnConfirm" class="primary" disabled>确认执行</button>
-        <div id="msg"></div>
-      </section>
-
-      <section class="panel">
-        <h2>回合历史</h2>
-        <div id="historyArea" class="history"></div>
-      </section>
-    </main>
-
-    <aside id="monumentPanel" class="panel side hide">
-      <h2>纪念物说明</h2>
-      <div id="monumentInfo"></div>
-    </aside>
+  <div id="historyArea" class="panel">
+    <p class="small">AI 建议已用 <span style="background:#fffde7; border:1px solid #ffcc00;">黄色</span> 标出</p>
   </div>
 
   <script src="./uploader.js"></script>
