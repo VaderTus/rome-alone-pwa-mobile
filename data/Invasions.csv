@@ -1,0 +1,4 @@
+﻿Invasion_Order,Pay_Military_To_Avoid,Lose_Regions_If_Not_Paid,Notes
+1,2,1,"第1次：支付2军事或丢1区域"
+2,3,1,"第2次：支付3军事或丢1区域"
+3,5,2,"第3次：支付5军事或丢2区域"

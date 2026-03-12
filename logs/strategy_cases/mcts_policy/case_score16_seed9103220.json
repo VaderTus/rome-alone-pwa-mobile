@@ -1,0 +1,1399 @@
+{
+  "policy": "mcts_policy",
+  "seed": 9103220,
+  "score": 16,
+  "final": {
+    "turn": 21,
+    "culture": 0,
+    "military": 0,
+    "industry": 0,
+    "occupied_regions": 6,
+    "occupied_culture_regions": 2,
+    "occupied_industry_regions": 3,
+    "invasions_resolved": 3,
+    "deck_left": 19,
+    "discard_size": 0,
+    "built_buildings": [
+      "B_KaiXuanDiaoSu",
+      "B_YuanXingJingJiChang"
+    ],
+    "monument_progress": {
+      "M_WanShenMiao": 0,
+      "M_LuoMaDouShouChang": 0,
+      "M_DiGuoGuangChang": 2,
+      "M_HaDeLiangLingQin": 0,
+      "M_KaiXuanMen": 2,
+      "M_TuLaZhenShiChang": 0
+    },
+    "game_lost": false
+  },
+  "trace": [
+    {
+      "turn": 1,
+      "hand": [
+        "C11",
+        "C17",
+        "C06"
+      ],
+      "legal_count": 5,
+      "chosen_action": {
+        "card_id": "C06",
+        "mode": "bottom",
+        "kind": "Conquest",
+        "meta": {
+          "target": "Industry"
+        }
+      },
+      "before": {
+        "turn": 1,
+        "culture": 1,
+        "military": 1,
+        "industry": 1,
+        "occupied_regions": 1,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 0,
+        "invasions_resolved": 0,
+        "deck_left": 18,
+        "discard_size": 0,
+        "built_buildings": [],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 1,
+        "culture": 1,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 18,
+        "discard_size": 3,
+        "built_buildings": [],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 2,
+      "hand": [
+        "C07",
+        "C12",
+        "C05"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C05",
+        "mode": "bottom",
+        "kind": "Build_Building",
+        "meta": {
+          "building_id": "B_YuanXingJingJiChang"
+        }
+      },
+      "before": {
+        "turn": 2,
+        "culture": 1,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 15,
+        "discard_size": 3,
+        "built_buildings": [],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 2,
+        "culture": 0,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 15,
+        "discard_size": 5,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 3,
+      "hand": [
+        "C04",
+        "C21",
+        "C10"
+      ],
+      "legal_count": 3,
+      "chosen_action": {
+        "card_id": "C21",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 3,
+        "culture": 0,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 12,
+        "discard_size": 5,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 3,
+        "culture": 0,
+        "military": 1,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 12,
+        "discard_size": 8,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 4,
+      "hand": [
+        "C13",
+        "C16",
+        "C18"
+      ],
+      "legal_count": 3,
+      "chosen_action": {
+        "card_id": "C18",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 4,
+        "culture": 0,
+        "military": 1,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 9,
+        "discard_size": 8,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 4,
+        "culture": 3,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 9,
+        "discard_size": 11,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 5,
+      "hand": [
+        "C20",
+        "C09",
+        "C08"
+      ],
+      "legal_count": 5,
+      "chosen_action": {
+        "card_id": "C08",
+        "mode": "bottom",
+        "kind": "Tribute",
+        "meta": {
+          "target": "Culture"
+        }
+      },
+      "before": {
+        "turn": 5,
+        "culture": 3,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 6,
+        "discard_size": 11,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 5,
+        "culture": 7,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 6,
+        "discard_size": 14,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 6,
+      "hand": [
+        "C02",
+        "C03",
+        "C15"
+      ],
+      "legal_count": 3,
+      "chosen_action": {
+        "card_id": "C03",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 6,
+        "culture": 7,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 3,
+        "discard_size": 14,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 6,
+        "culture": 9,
+        "military": 4,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 3,
+        "discard_size": 17,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 7,
+      "hand": [
+        "C01",
+        "C14",
+        "C19"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C14",
+        "mode": "bottom",
+        "kind": "Build_Monument",
+        "meta": {
+          "monument_id": "M_DiGuoGuangChang"
+        }
+      },
+      "before": {
+        "turn": 7,
+        "culture": 9,
+        "military": 4,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 0,
+        "deck_left": 0,
+        "discard_size": 17,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 0,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 7,
+        "culture": 6,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 20,
+        "discard_size": 0,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 1
+    },
+    {
+      "turn": 8,
+      "hand": [
+        "C01",
+        "C03",
+        "C18"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C03",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 8,
+        "culture": 6,
+        "military": 2,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 17,
+        "discard_size": 0,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 8,
+        "culture": 9,
+        "military": 4,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 17,
+        "discard_size": 3,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 9,
+      "hand": [
+        "C12",
+        "C11",
+        "C16"
+      ],
+      "legal_count": 5,
+      "chosen_action": {
+        "card_id": "C12",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 9,
+        "culture": 9,
+        "military": 4,
+        "industry": 1,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 14,
+        "discard_size": 3,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 9,
+        "culture": 9,
+        "military": 5,
+        "industry": 2,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 14,
+        "discard_size": 6,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 10,
+      "hand": [
+        "C07",
+        "C10",
+        "C13"
+      ],
+      "legal_count": 7,
+      "chosen_action": {
+        "card_id": "C07",
+        "mode": "bottom",
+        "kind": "Conquest",
+        "meta": {
+          "target": "Industry"
+        }
+      },
+      "before": {
+        "turn": 10,
+        "culture": 9,
+        "military": 5,
+        "industry": 2,
+        "occupied_regions": 2,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 1,
+        "invasions_resolved": 1,
+        "deck_left": 11,
+        "discard_size": 6,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 10,
+        "culture": 9,
+        "military": 3,
+        "industry": 3,
+        "occupied_regions": 3,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 2,
+        "invasions_resolved": 1,
+        "deck_left": 11,
+        "discard_size": 9,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 11,
+      "hand": [
+        "C06",
+        "C08",
+        "C21"
+      ],
+      "legal_count": 7,
+      "chosen_action": {
+        "card_id": "C06",
+        "mode": "bottom",
+        "kind": "Conquest",
+        "meta": {
+          "target": "Industry"
+        }
+      },
+      "before": {
+        "turn": 11,
+        "culture": 9,
+        "military": 3,
+        "industry": 3,
+        "occupied_regions": 3,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 2,
+        "invasions_resolved": 1,
+        "deck_left": 8,
+        "discard_size": 9,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 11,
+        "culture": 9,
+        "military": 0,
+        "industry": 4,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 8,
+        "discard_size": 12,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 12,
+      "hand": [
+        "C14",
+        "C15",
+        "C17"
+      ],
+      "legal_count": 6,
+      "chosen_action": {
+        "card_id": "C14",
+        "mode": "bottom",
+        "kind": "Build_Monument",
+        "meta": {
+          "monument_id": "M_DiGuoGuangChang"
+        }
+      },
+      "before": {
+        "turn": 12,
+        "culture": 9,
+        "military": 0,
+        "industry": 4,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 5,
+        "discard_size": 12,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 1,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 12,
+        "culture": 6,
+        "military": 0,
+        "industry": 4,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 5,
+        "discard_size": 15,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 13,
+      "hand": [
+        "C19",
+        "C02",
+        "C20"
+      ],
+      "legal_count": 6,
+      "chosen_action": {
+        "card_id": "C19",
+        "mode": "bottom",
+        "kind": "Build_Monument",
+        "meta": {
+          "monument_id": "M_KaiXuanMen"
+        }
+      },
+      "before": {
+        "turn": 13,
+        "culture": 6,
+        "military": 0,
+        "industry": 4,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 2,
+        "discard_size": 15,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 0,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 13,
+        "culture": 5,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 2,
+        "discard_size": 18,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 1,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 14,
+      "hand": [
+        "C09",
+        "C04"
+      ],
+      "legal_count": 3,
+      "chosen_action": {
+        "card_id": "C09",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 14,
+        "culture": 5,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 1,
+        "deck_left": 0,
+        "discard_size": 18,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 1,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 14,
+        "culture": 5,
+        "military": 0,
+        "industry": 3,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 20,
+        "discard_size": 0,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 1,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 1
+    },
+    {
+      "turn": 15,
+      "hand": [
+        "C21",
+        "C19",
+        "C10"
+      ],
+      "legal_count": 6,
+      "chosen_action": {
+        "card_id": "C19",
+        "mode": "bottom",
+        "kind": "Build_Monument",
+        "meta": {
+          "monument_id": "M_KaiXuanMen"
+        }
+      },
+      "before": {
+        "turn": 15,
+        "culture": 5,
+        "military": 0,
+        "industry": 3,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 17,
+        "discard_size": 0,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 1,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 15,
+        "culture": 4,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 17,
+        "discard_size": 3,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 16,
+      "hand": [
+        "C15",
+        "C12",
+        "C20"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C15",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 16,
+        "culture": 4,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 14,
+        "discard_size": 3,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 16,
+        "culture": 8,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 14,
+        "discard_size": 6,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 17,
+      "hand": [
+        "C17",
+        "C08",
+        "C04"
+      ],
+      "legal_count": 5,
+      "chosen_action": {
+        "card_id": "C08",
+        "mode": "bottom",
+        "kind": "Tribute",
+        "meta": {
+          "target": "Culture"
+        }
+      },
+      "before": {
+        "turn": 17,
+        "culture": 8,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 11,
+        "discard_size": 6,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 17,
+        "culture": 9,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 11,
+        "discard_size": 9,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 18,
+      "hand": [
+        "C14",
+        "C09",
+        "C13"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C14",
+        "mode": "top",
+        "kind": "TopResource",
+        "meta": {}
+      },
+      "before": {
+        "turn": 18,
+        "culture": 9,
+        "military": 0,
+        "industry": 1,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 8,
+        "discard_size": 9,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 18,
+        "culture": 9,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 8,
+        "discard_size": 12,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 19,
+      "hand": [
+        "C03",
+        "C18",
+        "C01"
+      ],
+      "legal_count": 5,
+      "chosen_action": {
+        "card_id": "C01",
+        "mode": "bottom",
+        "kind": "Build_Building",
+        "meta": {
+          "building_id": "B_KaiXuanDiaoSu"
+        }
+      },
+      "before": {
+        "turn": 19,
+        "culture": 9,
+        "military": 0,
+        "industry": 2,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 5,
+        "discard_size": 12,
+        "built_buildings": [
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 19,
+        "culture": 8,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 5,
+        "discard_size": 14,
+        "built_buildings": [
+          "B_KaiXuanDiaoSu",
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 20,
+      "hand": [
+        "C07",
+        "C11",
+        "C16"
+      ],
+      "legal_count": 4,
+      "chosen_action": {
+        "card_id": "C07",
+        "mode": "bottom",
+        "kind": "Conquest",
+        "meta": {
+          "target": "Culture"
+        }
+      },
+      "before": {
+        "turn": 20,
+        "culture": 8,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 4,
+        "occupied_culture_regions": 0,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 2,
+        "discard_size": 14,
+        "built_buildings": [
+          "B_KaiXuanDiaoSu",
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 20,
+        "culture": 7,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 5,
+        "occupied_culture_regions": 1,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 2,
+        "discard_size": 17,
+        "built_buildings": [
+          "B_KaiXuanDiaoSu",
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 0
+    },
+    {
+      "turn": 21,
+      "hand": [
+        "C06",
+        "C02"
+      ],
+      "legal_count": 3,
+      "chosen_action": {
+        "card_id": "C06",
+        "mode": "bottom",
+        "kind": "Conquest",
+        "meta": {
+          "target": "Culture"
+        }
+      },
+      "before": {
+        "turn": 21,
+        "culture": 7,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 5,
+        "occupied_culture_regions": 1,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 2,
+        "deck_left": 0,
+        "discard_size": 17,
+        "built_buildings": [
+          "B_KaiXuanDiaoSu",
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "after": {
+        "turn": 21,
+        "culture": 0,
+        "military": 0,
+        "industry": 0,
+        "occupied_regions": 6,
+        "occupied_culture_regions": 2,
+        "occupied_industry_regions": 3,
+        "invasions_resolved": 3,
+        "deck_left": 19,
+        "discard_size": 0,
+        "built_buildings": [
+          "B_KaiXuanDiaoSu",
+          "B_YuanXingJingJiChang"
+        ],
+        "monument_progress": {
+          "M_WanShenMiao": 0,
+          "M_LuoMaDouShouChang": 0,
+          "M_DiGuoGuangChang": 2,
+          "M_HaDeLiangLingQin": 0,
+          "M_KaiXuanMen": 2,
+          "M_TuLaZhenShiChang": 0
+        },
+        "game_lost": false
+      },
+      "invasion_happened": 1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+﻿seed,score,turns,final_regions,final_built_count,final_built_list,opening_cards,build_turn_B_JunTuanYaoSai,build_turn_B_YuanXingJingJiChang,build_turn_B_DiGuoJinKuang,build_turn_B_KaiXuanDiaoSu,build_turn_B_DiGuoYinShuiDao,seen_turn_帝国广场1,seen_turn_帝国广场2,seen_turn_凯旋门1,seen_turn_凯旋门2,seen_turn_军团要塞,seen_turn_圆形竞技场,seen_turn_帝国金矿,seen_turn_凯旋雕塑,seen_turn_帝国引水道
+2001430,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C21|C02|C19|C12|C16|C08,,3,,17.0,14,5,4,7,1,4,3,3,5,1
+2002237,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C14|C10|C07|C09|C18|C03,,3,,15.0,8,1,5,2,7,2,3,4,7,6
+2002968,16,21,5,4,B_DiGuoYinShuiDao|B_JunTuanYaoSai|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C11|C15|C20|C21|C02|C18,20.0,4,,19.0,18,7,1,2,7,3,4,6,6,2
+2003069,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C16|C06|C04|C20|C18|C17,,5,,21.0,12,7,3,2,6,3,5,1,4,3
+2003310,16,21,5,4,B_DiGuoJinKuang|B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C10|C08|C02|C20|C19|C18,,3,17.0,15.0,12,5,6,2,2,6,3,4,7,1
+2003662,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C11|C01|C19|C02|C20|C17,,5,,9.0,16,3,4,3,1,7,5,6,1,2
+2004978,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C11|C13|C19|C16|C20|C17,,3,,21.0,8,6,4,4,1,5,3,3,7,3
+2005038,16,21,5,4,B_DiGuoYinShuiDao|B_JunTuanYaoSai|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C01|C15|C16|C03|C04|C20,2.0,9,,17.0,18,5,1,3,3,2,7,2,1,4
+2006039,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C19|C01|C20|C03|C17|C14,,7,,19.0,9,2,4,5,1,2,7,4,1,3
+2006709,16,21,6,2,B_DiGuoYinShuiDao|B_YuanXingJingJiChang,C12|C09|C03|C05|C01|C20,,2,,,8,5,3,4,5,1,2,5,2,4
+2008065,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C03|C12|C18|C11|C17|C16,,4,,5.0,21,7,6,1,3,1,4,3,5,3
+2008671,16,21,5,3,B_DiGuoYinShuiDao|B_KaiXuanDiaoSu|B_YuanXingJingJiChang,C21|C19|C09|C11|C15|C17,,3,,20.0,13,7,2,7,1,4,3,3,5,6

@@ -1,0 +1,6 @@
+﻿Building_ID,Building_Name,Build_Culture,Build_Military,Build_Industry,Immediate_GP,Trigger_Type,Trigger_Bonus_Culture,Trigger_Bonus_Military,Trigger_Bonus_Industry,Trigger_UseLimit,Special_Effect_Code,Removed_From_Deck_When_Built
+B_KaiXuanDiaoSu,凯旋雕塑,1,0,2,2,None,0,0,0,None,None,TRUE
+B_DiGuoYinShuiDao,帝国引水道,1,0,2,2,None,0,0,0,None,None,TRUE
+B_JunTuanYaoSai,军团要塞,0,1,2,0,OnGainMilitary,0,2,0,OncePerTurn,None,TRUE
+B_DiGuoJinKuang,帝国金矿,0,0,3,0,OnGainIndustry,0,0,2,OncePerTurn,None,TRUE
+B_YuanXingJingJiChang,圆形竞技场,1,0,2,0,OnGainCulture,2,0,0,OncePerTurn,None,TRUE

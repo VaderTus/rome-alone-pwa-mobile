@@ -1,0 +1,7 @@
+﻿Monument_ID,Monument_Name,Cubes_To_Complete,Score_Type,Score_Value,Special_Effect_Code,Effect_Status,Notes
+M_WanShenMiao,万神庙,2,FlatGP,4,None,Confirmed,对应Colossus：完成后+4GP（你已确认与哈德良陵寝互换）
+M_LuoMaDouShouChang,罗马斗兽场,2,FlatGP,2,IgnoreInvasions,Confirmed,对应Colosseum：完成后+2GP，且忽略后续所有入侵效果
+M_DiGuoGuangChang,帝国广场,2,FlatGP,2,SenateSwap,Confirmed,对应Senate：文化<->军事可互换（含获得与支付图标语义）且+2GP
+M_HaDeLiangLingQin,哈德良陵寝,2,PerBuilding,1,None,Confirmed,对应Hippodrome：每个已建建筑+1GP（你已确认与万神庙互换）
+M_KaiXuanMen,凯旋门,2,PerRegion,1,None,Confirmed,对应Triumphal Arc：每个占领地区+1GP
+M_TuLaZhenShiChang,图拉真市场,2,MinResource,1,None,Confirmed,对应Great Lighthouse：按三资源中最小值计分

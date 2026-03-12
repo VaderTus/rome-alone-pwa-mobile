@@ -1,0 +1,11 @@
+﻿策略,是否失败,总分,回合数,seed,达到12+,达到14+
+mcts_distilled_final,False,18,21,1200069,1,1
+mcts_distilled_final,False,18,21,1200226,1,1
+mcts_distilled_final,False,18,21,1200503,1,1
+mcts_distilled_final,False,18,21,1200625,1,1
+mcts_distilled_final,False,18,21,1201058,1,1
+mcts_distilled_final,False,18,21,1201198,1,1
+mcts_distilled_final,False,18,21,1201320,1,1
+mcts_distilled_final,False,18,21,1201438,1,1
+mcts_distilled_final,False,18,21,1201461,1,1
+mcts_distilled_final,False,18,21,1201560,1,1
