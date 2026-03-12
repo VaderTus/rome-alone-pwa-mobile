@@ -49,7 +49,6 @@ let uiMode = "normal";
 let pendingConquestAction = null;
 let pendingInvasion = null;
 
-// ===== 🤖 AI 军师状态 =====
 let aiBestCard = null;    
 let aiBestMode = null;    
 let aiBestMeta = {};      
@@ -68,7 +67,12 @@ function initGame(){
 }
 
 function nextTurn(){
-  if(state.lost || state.inv>=3){ render(); return; }
+  // 🏁 拦截死亡或通关状态
+  if(state.lost || state.inv >= 3){ 
+      uiMode = "game_over";
+      render(); 
+      return; 
+  }
   state.turn++;
   const n = Math.min(3, state.deck.length);
   hand=[]; for(let i=0;i<n;i++) hand.push(state.deck.pop());
@@ -83,8 +87,12 @@ function computeLegal(){
     legal.push({card_id:cid, mode:"top", kind:"TopResource", meta:{}});
     const b = c.bottom;
     const curRegs = (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length;
-    if(b.type==="Conquest" && canPay(0,curRegs,0) && CITY_IDS.some(id=>!state.cities[id])) {
-      legal.push({card_id:cid, mode:"bottom", kind:"Conquest", meta:{}});
+    
+    if(b.type==="Conquest" && canPay(0,curRegs,0)) {
+      // 🚀 修复点：严密检查到底还有没有空地！
+      let cul_free = !state.cities["C1"] || !state.cities["C2"] || !state.cities["C3"];
+      let ind_free = !state.cities["I1"] || !state.cities["I2"] || !state.cities["I3"];
+      if (cul_free || ind_free) legal.push({card_id:cid, mode:"bottom", kind:"Conquest", meta:{}});
     }
     else if(b.type==="Tribute") legal.push({card_id:cid, mode:"bottom", kind:"Tribute", meta:{target:b.target}});
     else if(b.type==="Build_Building" && !state.built.includes(b.ref) && canPay(b.cost.c, b.cost.m, b.cost.i))
@@ -93,7 +101,7 @@ function computeLegal(){
       legal.push({card_id:cid, mode:"bottom", kind:"Build_Monument", meta:{monument_id:b.ref}});
   });
   
-  fetchAIRecommendation();
+  if (uiMode !== "game_over") fetchAIRecommendation();
 }
 
 function occupiedRegions(){ return (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length; }
@@ -104,34 +112,66 @@ function canPay(c,m,i){
   if(state.industry<i) return false;
   return senateActive() ? (state.culture+state.military >= c+m) : (state.culture>=c && state.military>=m);
 }
+
 function pay(c,m,i){
   state.industry -= i;
   if(!senateActive()){ state.culture-=c; state.military-=m; return; }
   let need=c+m;
   while(need>0){ if(state.culture>=state.military && state.culture>0) state.culture--; else if(state.military>0) state.military--; else state.culture--; need--; }
 }
-function addRes(type,amt){ const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; const b=state[k]; state[k]=Math.min(9,state[k]+amt); return state[k]-b; }
+
+function addRes(type,amt){ 
+    const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; 
+    const b=state[k]; 
+    state[k]=Math.min(9,state[k]+amt); 
+    return state[k]-b; 
+}
+
+// 🧠 修复点：彻底重写高智商的分配机制
 function gainWithTriggers(g){
-  let c=g.Culture||0,m=g.Military||0,i=g.Industry||0;
-  if(senateActive()){ let t=c+m; c=0; m=0; while(t>0){ if(state.culture<=state.military)c++; else m++; t--; } }
-  const gc=addRes("Culture",c), gm=addRes("Military",m), gi=addRes("Industry",i);
-  if(gc>0 && state.built.includes("B_YuanXingJingJiChang")) addRes("Culture",2);
-  if(gm>0 && state.built.includes("B_JunTuanYaoSai")) addRes("Military",2);
-  if(gi>0 && state.built.includes("B_DiGuoJinKuang")) addRes("Industry",2);
+  let c = g.Culture || 0, m = g.Military || 0, i = g.Industry || 0;
+  
+  if(senateActive()){
+    let base_cm = c + m;
+    let total_cm = base_cm;
+    // 触发器加成放入总池
+    if(base_cm > 0 && state.built.includes("B_YuanXingJingJiChang")) total_cm += 2;
+    if(base_cm > 0 && state.built.includes("B_JunTuanYaoSai")) total_cm += 2;
+
+    // 智能防溢出分配器
+    let final_c = 0; let final_m = 0;
+    for(let step=0; step < total_cm; step++){
+        if (state.culture + final_c >= 9 && state.military + final_m < 9) {
+            final_m++; // 文化满了，塞给军事
+        } else if (state.military + final_m >= 9 && state.culture + final_c < 9) {
+            final_c++; // 军事满了，塞给文化
+        } else if (state.culture + final_c <= state.military + final_m) {
+            final_c++; // 优先补平短板
+        } else {
+            final_m++;
+        }
+    }
+    c = final_c; m = final_m;
+  } else {
+    // 正常触发
+    if(c > 0 && state.built.includes("B_YuanXingJingJiChang")) c += 2;
+    if(m > 0 && state.built.includes("B_JunTuanYaoSai")) m += 2;
+  }
+
+  if(i > 0 && state.built.includes("B_DiGuoJinKuang")) i += 2;
+
+  addRes("Culture", c); addRes("Military", m); addRes("Industry", i);
 }
 
 async function fetchAIRecommendation() {
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
-  
-  if (!coachOn || legal.length === 0) {
+  if (!coachOn || legal.length === 0 || uiMode === "game_over") {
     aiBestCard = null; aiBestMode = null; aiBestMeta = {};
     render(); 
     return;
   }
-
   isAiThinking = true;
   render(); 
-
   try {
     const res = await fetch("/ask_ai", {
       method: "POST",
@@ -146,7 +186,6 @@ async function fetchAIRecommendation() {
     console.error("❌ 无法连接 AI:", e);
     aiBestCard = null; aiBestMode = null; aiBestMeta = {};
   }
-
   isAiThinking = false;
   render();
 }
@@ -158,6 +197,30 @@ function render(){
     <div>资源: 文 ${state.culture}, 军 ${state.military}, 工 ${state.industry} | 地区: ${occupiedRegions()}</div>
     <div>当前得分: <b>${calcScore()}</b></div>
   `;
+
+  // 🏁 游戏结束画面
+  if (uiMode === "game_over") {
+      const score = calcScore();
+      let title = ""; let color = "";
+      if (state.lost) { title = "卡利古拉 (暴君 - 罗马沦陷)"; color = "#d32f2f"; }
+      else if (score <= 5) { title = "提比略 (平庸之主)"; color = "#757575"; }
+      else if (score <= 10) { title = "克劳狄乌斯 (守成之君)"; color = "#1976d2"; }
+      else if (score <= 15) { title = "尤利乌斯·凯撒 (传奇大帝)"; color = "#7b1fa2"; }
+      else { title = "奥古斯都 (孤城真神)"; color = "#fbc02d"; }
+
+      document.getElementById("actionArea").innerHTML = `
+          <div style="text-align:center; padding: 20px; background: ${state.lost ? '#ffebee' : '#fff8e1'}; border-radius: 10px; border: 2px solid ${color};">
+              <h1 style="color: ${color}; margin-top: 0;">${state.lost ? '☠️ 罗马沦陷' : '👑 帝国时代结束'}</h1>
+              <h2>最终得分: ${score} 分</h2>
+              <h3 style="color: #333;">史书评价: ${title}</h3>
+              <p>存活回合: ${state.turn} | 建造奇观: ${Object.values(state.mono).filter(v=>v>=2).length} 座</p>
+              <button onclick="initGame()" style="padding:15px 30px; font-size:18px; font-weight:bold; background:#4CAF50; color:white; border:none; border-radius:8px; cursor:pointer; margin-top:10px;">再创辉煌 (新开一局)</button>
+          </div>
+      `;
+      document.getElementById("mapArea").innerHTML = "";
+      document.getElementById("handArea").innerHTML = "";
+      return; 
+  }
 
   const mapArea = document.getElementById("mapArea");
   mapArea.innerHTML = `
@@ -187,7 +250,7 @@ function render(){
     aiBox.style.fontFamily = "monospace, sans-serif";
     
     if (isAiThinking) {
-      aiBox.innerHTML = "<b>📡 正在连接 V5 神经网络...</b>";
+      aiBox.innerHTML = "<b>📡 正在连接云端 V5 神经网络...</b>";
     } else if (aiBestCard && aiBestMode) {
       const c = cardById(aiBestCard);
       const cModeText = aiBestMode === "top" ? "【上半区】(获取资源)" : "【下半区】(执行动作)";
@@ -204,7 +267,7 @@ function render(){
 
       aiBox.innerHTML = `<b>🤖 V5 神明法旨：</b><br>打出：<b>${aiBestCard} - ${c.name}</b><br>选择：<b>${cModeText}</b>${extraHint}`;
     } else {
-      aiBox.innerHTML = "<b>🤖 AI 军师已就绪 (无动作建议)</b>";
+      aiBox.innerHTML = "<b>🤖 AI 军师已就绪 (当前无动作建议)</b>";
     }
     actionArea.appendChild(aiBox);
   }
@@ -223,29 +286,23 @@ function render(){
     hint.style.color = "#666";
     actionArea.appendChild(hint);
   } else if(uiMode==="invasion_choice"){
-    actionArea.innerHTML += `<button onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()">支付军事 ${pendingInvasion.pay}</button><button onclick="uiMode='choose_lose_city';render()">丢弃地区</button>`;
+    actionArea.innerHTML += `<button onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()" style="margin-right:10px;">支付军事 ${pendingInvasion.pay} 防御</button><button onclick="uiMode='choose_lose_city';render()">割地求生 (丢弃地区)</button>`;
   }
 
   document.getElementById("monumentInfo").innerHTML = Object.entries(MONUMENTS).map(([k,v])=>`<div class="card"><b>${v.name}</b> (${state.mono[k]}/2)<br><small>${v.desc}</small></div>`).join("");
   document.getElementById("historyArea").innerHTML = trace.map(t=>`T${t.turn}: ${t.event} (${t.after_score}分)`).join("<br>");
 }
 
-// 事件绑定
 function onCityClick(cityId){
   if(uiMode==="choose_conquest_city"){
     if(state.cities[cityId]) return;
-    
-    // 🚀 核心修复：绝不能在这里二次扣费，也不能再执行 pushUndo！
     const before = clone(state); 
-    pay(0, occupiedRegions(), 0); // 真正扣费的地方，按当前地区数扣除
-    
+    pay(0, occupiedRegions(), 0); 
     state.cities[cityId]=true;
     cityId.startsWith("C") ? gainWithTriggers({Culture:1}) : gainWithTriggers({Industry:1});
     hand.forEach(x=>state.discard.push(x));
-    
     const aiSug = (aiBestCard && aiBestMode) ? {card_id: aiBestCard, mode: aiBestMode} : null;
     finishMove(before, `征服 ${cityId}`, aiSug);
-    
   } else if(uiMode==="choose_lose_city"){
     if(!state.cities[cityId]) return;
     state.cities[cityId]=false;
@@ -256,16 +313,13 @@ function onCityClick(cityId){
 
 function onConfirm(){
   if(!pending) return;
-  
   if(pending.kind==="Conquest"){
     pushUndo(); 
-    // 🚀 核心修复：在这里只切换界面，绝对不扣费！
     pendingConquestAction = pending;
     uiMode = "choose_conquest_city";
     render(); 
     return;
   }
-
   pushUndo();
   const aiSug = (aiBestCard && aiBestMode) ? {card_id: aiBestCard, mode: aiBestMode} : null;
   const before = clone(state);
@@ -321,6 +375,7 @@ function checkInvasion(){
   if(canPay(0, inv.pay, 0)) { uiMode="invasion_choice"; pendingInvasion={pay:inv.pay, loseLeft:inv.lose}; render(); return true; }
   else { uiMode="choose_lose_city"; pendingInvasion={loseLeft:inv.lose}; render(); return true; }
 }
+
 function finishInvasionStep(){ state.inv++; state.deck=shuffle(state.discard); state.discard=[]; uiMode="normal"; nextTurn(); }
 function setMsg(t){ document.getElementById("msg").textContent=t; }
 function calcScore(){ if(state.lost) return 0; let s = occupiedRegions(); state.built.forEach(bid => { if(BUILDINGS[bid]&&BUILDINGS[bid].gp) s += BUILDINGS[bid].gp; }); Object.entries(state.mono).forEach(([mid,p])=>{ if(p>=2){ const m=MONUMENTS[mid]; if(m.type==="FlatGP") s+=m.v; else if(m.type==="PerBuilding") s+=m.v*state.built.length; else if(m.type==="PerRegion") s+=m.v*occupiedRegions(); else if(m.type==="MinResource") s+=m.v*Math.min(state.culture,state.military,state.industry); } }); return s; }
