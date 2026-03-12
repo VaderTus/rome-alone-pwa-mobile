@@ -49,9 +49,11 @@ let uiMode = "normal";
 let pendingConquestAction = null;
 let pendingInvasion = null;
 
-// ===== AI 云端通信核心变量 =====
-let aiBestIdx = -1;       // 记录 AI 推荐的动作索引
-let isAiThinking = false; // 标记 AI 是否正在思考
+// ===== 🤖 AI 军师状态 =====
+let aiBestCard = null;    
+let aiBestMode = null;    
+let aiBestMeta = {};      
+let isAiThinking = false; 
 
 function initGame(){
   sessionId = "sess_" + Date.now();
@@ -71,7 +73,7 @@ function nextTurn(){
   const n = Math.min(3, state.deck.length);
   hand=[]; for(let i=0;i<n;i++) hand.push(state.deck.pop());
   pending=null; uiMode="normal";
-  computeLegal(); // 计算合法动作，并在内部触发 AI 请求
+  computeLegal(); 
 }
 
 function computeLegal(){
@@ -81,8 +83,9 @@ function computeLegal(){
     legal.push({card_id:cid, mode:"top", kind:"TopResource", meta:{}});
     const b = c.bottom;
     const curRegs = (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length;
-    if(b.type==="Conquest" && canPay(0,curRegs,0) && CITY_IDS.some(id=>!state.cities[id]))
+    if(b.type==="Conquest" && canPay(0,curRegs,0) && CITY_IDS.some(id=>!state.cities[id])) {
       legal.push({card_id:cid, mode:"bottom", kind:"Conquest", meta:{}});
+    }
     else if(b.type==="Tribute") legal.push({card_id:cid, mode:"bottom", kind:"Tribute", meta:{target:b.target}});
     else if(b.type==="Build_Building" && !state.built.includes(b.ref) && canPay(b.cost.c, b.cost.m, b.cost.i))
       legal.push({card_id:cid, mode:"bottom", kind:"Build_Building", meta:{building_id:b.ref}});
@@ -90,7 +93,6 @@ function computeLegal(){
       legal.push({card_id:cid, mode:"bottom", kind:"Build_Monument", meta:{monument_id:b.ref}});
   });
   
-  // ⚡ 核心修改：动作计算完毕后，异步呼叫本地 V5 真神
   fetchAIRecommendation();
 }
 
@@ -113,46 +115,42 @@ function gainWithTriggers(g){
   let c=g.Culture||0,m=g.Military||0,i=g.Industry||0;
   if(senateActive()){ let t=c+m; c=0; m=0; while(t>0){ if(state.culture<=state.military)c++; else m++; t--; } }
   const gc=addRes("Culture",c), gm=addRes("Military",m), gi=addRes("Industry",i);
-  if(gc>0 && state.built.includes("B_YuanXingJiChang")) addRes("Culture",2);
+  if(gc>0 && state.built.includes("B_YuanXingJingJiChang")) addRes("Culture",2);
   if(gm>0 && state.built.includes("B_JunTuanYaoSai")) addRes("Military",2);
   if(gi>0 && state.built.includes("B_DiGuoJinKuang")) addRes("Industry",2);
 }
 
-// ===== 🧠 异步获取 AI 推荐 =====
 async function fetchAIRecommendation() {
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
   
-  // 如果开关没开，或者没有合法动作，直接渲染
   if (!coachOn || legal.length === 0) {
-    aiBestIdx = -1;
+    aiBestCard = null; aiBestMode = null; aiBestMeta = {};
     render(); 
     return;
   }
 
-  // 1. 挂起“思考中”状态并渲染提示
   isAiThinking = true;
   render(); 
 
   try {
-    // 2. 跨域呼叫本地 Python FastAPI 服务器 (确保 api_server.py 已运行)
-    const res = await fetch("http://127.0.0.1:8000/ask_ai", {
+    const res = await fetch("/ask_ai", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ state: state, hand: hand, legal: legal })
     });
     const data = await res.json();
-    aiBestIdx = data.best_index; // 拿到 V5 传回的神谕！
+    aiBestCard = data.best_card;
+    aiBestMode = data.best_mode;
+    aiBestMeta = data.best_meta || {};
   } catch (e) {
-    console.error("❌ 无法连接 AI 军师 (请检查 api_server.py 是否开启):", e);
-    aiBestIdx = -1;
+    console.error("❌ 无法连接 AI:", e);
+    aiBestCard = null; aiBestMode = null; aiBestMeta = {};
   }
 
-  // 3. 思考完毕，重新渲染出带黄框的界面
   isAiThinking = false;
   render();
 }
 
-// ===== UI 渲染 =====
 function render(){
   document.getElementById("statePanel").innerHTML = `
     <h2>状态</h2>
@@ -178,32 +176,54 @@ function render(){
   const actionArea = document.getElementById("actionArea");
   actionArea.innerHTML = "";
   
-  if(uiMode==="normal"){
-    // ⚡ 如果 AI 正在算，显示极其炫酷的提示！
-    if(isAiThinking) {
-      actionArea.innerHTML = "<p style='color: #888; font-weight: bold; font-style: italic;'>🧠 机械神明 V5 正在跨界推演...</p>";
-      return; 
-    }
+  const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
+  if (coachOn) {
+    const aiBox = document.createElement("div");
+    aiBox.style.padding = "10px";
+    aiBox.style.marginBottom = "15px";
+    aiBox.style.backgroundColor = "#e8f5e9";
+    aiBox.style.borderLeft = "5px solid #2e7d32";
+    aiBox.style.color = "#1b5e20";
+    aiBox.style.fontFamily = "monospace, sans-serif";
+    
+    if (isAiThinking) {
+      aiBox.innerHTML = "<b>📡 正在连接 V5 神经网络...</b>";
+    } else if (aiBestCard && aiBestMode) {
+      const c = cardById(aiBestCard);
+      const cModeText = aiBestMode === "top" ? "【上半区】(获取资源)" : "【下半区】(执行动作)";
+      
+      let extraHint = "";
+      if (uiMode === "choose_conquest_city" && c.bottom.type === "Conquest") {
+          const targetType = aiBestMeta.target === "Culture" ? "文化地区 (C)" : (aiBestMeta.target === "Industry" ? "工业地区 (I)" : "任意地区");
+          extraHint = `<br><span style='color:#d32f2f; font-weight:bold;'>🎯 战略指引：请在上方地图点击占领【${targetType}】</span>`;
+      } 
+      else if (uiMode === "normal" && aiBestMode === "bottom" && c.bottom.type === "Conquest") {
+          const targetType = aiBestMeta.target === "Culture" ? "文化地区" : (aiBestMeta.target === "Industry" ? "工业地区" : "地区");
+          extraHint = `<br><span style='color:#0277bd;'>💡 备注：随后请选择占领【${targetType}】</span>`;
+      }
 
+      aiBox.innerHTML = `<b>🤖 V5 神明法旨：</b><br>打出：<b>${aiBestCard} - ${c.name}</b><br>选择：<b>${cModeText}</b>${extraHint}`;
+    } else {
+      aiBox.innerHTML = "<b>🤖 AI 军师已就绪 (无动作建议)</b>";
+    }
+    actionArea.appendChild(aiBox);
+  }
+
+  if(uiMode==="normal"){
     legal.forEach((a, i) => {
-      const isBest = (i === aiBestIdx);
       const b = document.createElement("button");
       b.className = "action-btn";
-      
-      // 暴力内联样式，确保 V5 选中的必须变黄
-      if (isBest) {
-        b.style.backgroundColor = "#fffde7";
-        b.style.border = "3px solid #ffcc00";
-        b.style.fontWeight = "bold";
-        b.style.boxShadow = "0 0 10px rgba(255,204,0,0.5)";
-      }
-      
-      b.textContent = `${i+1}. ${cardById(a.card_id).name} - ${a.mode==="top"?"取资源":a.kind} ${isBest?'(✨ AI推荐)':''}`;
+      b.textContent = `${i+1}. ${cardById(a.card_id).name} - ${a.mode==="top"?"取资源":a.kind}`;
       b.onclick = () => { pending=a; document.getElementById("btnConfirm").disabled=false; setMsg(`已选: ${b.textContent}`); };
       actionArea.appendChild(b);
     });
+  } else if(uiMode==="choose_conquest_city"){
+    const hint = document.createElement("p");
+    hint.innerHTML = "👆 <b>请在上方地图中点击要占领的城市...</b>";
+    hint.style.color = "#666";
+    actionArea.appendChild(hint);
   } else if(uiMode==="invasion_choice"){
-    actionArea.innerHTML = `<button onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()">支付军事 ${pendingInvasion.pay}</button><button onclick="uiMode='choose_lose_city';render()">丢弃地区</button>`;
+    actionArea.innerHTML += `<button onclick="pay(0,${pendingInvasion.pay},0);finishInvasionStep()">支付军事 ${pendingInvasion.pay}</button><button onclick="uiMode='choose_lose_city';render()">丢弃地区</button>`;
   }
 
   document.getElementById("monumentInfo").innerHTML = Object.entries(MONUMENTS).map(([k,v])=>`<div class="card"><b>${v.name}</b> (${state.mono[k]}/2)<br><small>${v.desc}</small></div>`).join("");
@@ -214,13 +234,18 @@ function render(){
 function onCityClick(cityId){
   if(uiMode==="choose_conquest_city"){
     if(state.cities[cityId]) return;
-    pushUndo();
-    const before = clone(state);
-    pay(0, occupiedRegions()-1, 0); 
+    
+    // 🚀 核心修复：绝不能在这里二次扣费，也不能再执行 pushUndo！
+    const before = clone(state); 
+    pay(0, occupiedRegions(), 0); // 真正扣费的地方，按当前地区数扣除
+    
     state.cities[cityId]=true;
     cityId.startsWith("C") ? gainWithTriggers({Culture:1}) : gainWithTriggers({Industry:1});
     hand.forEach(x=>state.discard.push(x));
-    finishMove(before, `征服 ${cityId}`);
+    
+    const aiSug = (aiBestCard && aiBestMode) ? {card_id: aiBestCard, mode: aiBestMode} : null;
+    finishMove(before, `征服 ${cityId}`, aiSug);
+    
   } else if(uiMode==="choose_lose_city"){
     if(!state.cities[cityId]) return;
     state.cities[cityId]=false;
@@ -231,11 +256,18 @@ function onCityClick(cityId){
 
 function onConfirm(){
   if(!pending) return;
+  
+  if(pending.kind==="Conquest"){
+    pushUndo(); 
+    // 🚀 核心修复：在这里只切换界面，绝对不扣费！
+    pendingConquestAction = pending;
+    uiMode = "choose_conquest_city";
+    render(); 
+    return;
+  }
+
   pushUndo();
-  
-  // 记录 AI 选择用于数据导出
-  const aiSug = aiBestIdx >= 0 ? legal[aiBestIdx] : null;
-  
+  const aiSug = (aiBestCard && aiBestMode) ? {card_id: aiBestCard, mode: aiBestMode} : null;
   const before = clone(state);
   const card = cardById(pending.card_id);
 
@@ -243,12 +275,6 @@ function onConfirm(){
     gainWithTriggers({Culture:card.top.c, Military:card.top.m, Industry:card.top.i});
     hand.forEach(x=>state.discard.push(x));
     finishMove(before, "上半资源", aiSug);
-  } else if(pending.kind==="Conquest"){
-    pay(0, occupiedRegions(), 0);
-    pendingConquestAction = pending;
-    uiMode = "choose_conquest_city";
-    render();
-    return;
   } else if(pending.kind==="Tribute"){
     const amt = occupiedRegions();
     pending.meta.target==="Culture" ? gainWithTriggers({Culture:amt}) : gainWithTriggers({Industry:amt});
@@ -279,7 +305,6 @@ function onUndo(){
   const u = undoStack.pop();
   state=u.state; hand=u.hand; legal=u.legal; trace=u.trace;
   uiMode=u.uiMode; pendingConquestAction=u.pendingConquestAction; pendingInvasion=u.pendingInvasion;
-  // 撤销后，状态变了，必须重新向云端求签
   fetchAIRecommendation();
 }
 
@@ -313,7 +338,6 @@ function onExport(){
 
 document.getElementById("btnNew").onclick = initGame;
 document.getElementById("btnUndo").onclick = onUndo;
-// ⚡ 开关切换时，也要重新向神明求签
 document.getElementById("aiCoachSwitch").onchange = fetchAIRecommendation;
 document.getElementById("btnConfirm").onclick = onConfirm;
 document.getElementById("btnToggleMonument").onclick = () => document.getElementById("monumentPanel").classList.toggle("hide");

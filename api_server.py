@@ -4,6 +4,7 @@ import copy
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uvicorn
 import torch
@@ -60,9 +61,8 @@ def ask_ai(payload: GamePayload):
     py_state.discard = js_state.get("discard", [])
 
     real_legal_acts = engine.legal_actions(py_state, payload.hand)
-    
     if not real_legal_acts:
-        return {"best_card": None, "best_mode": None}
+        return {"best_card": None, "best_mode": None, "best_meta": {}}
 
     best_act = None
     max_value = -float('inf')
@@ -70,7 +70,6 @@ def ask_ai(payload: GamePayload):
     for act in real_legal_acts:
         next_state = copy.deepcopy(py_state)
         engine.apply_action(next_state, payload.hand, act)
-        
         if len(next_state.deck) == 0:
             engine.resolve_invasion_if_needed(next_state, policy_name="non_random")
             if next_state.game_lost:
@@ -89,8 +88,13 @@ def ask_ai(payload: GamePayload):
 
     return {
         "best_card": best_act["card_id"],
-        "best_mode": best_act["mode"]
+        "best_mode": best_act["mode"],
+        "best_meta": best_act.get("meta", {})
     }
+
+# 🚀 【神级挂载】：把 PWA 文件夹直接当做网页根目录发出去！(这句必须写在 /ask_ai 路由的下面)
+pwa_path = PROJECT_ROOT / "pwa-mobile"
+app.mount("/", StaticFiles(directory=pwa_path, html=True), name="pwa")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
