@@ -1,0 +1,25 @@
+﻿:root{ --bg:#f3f5f8; --panel:#ffffff; --blue:#1f6feb; --line:#d9dce2; }
+body{font-family:sans-serif;background:var(--bg);margin:10px}
+.topbar, .panel{background:var(--panel);padding:10px;border-radius:10px;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.hide{display:none}
+.map-wrap{display:grid;grid-template-columns:1fr 100px 1fr;gap:10px;text-align:center;align-items:center}
+.map-col{display:flex;flex-direction:column;gap:5px}
+.city{padding:10px 5px;border:1px solid var(--line);border-radius:5px;background:#fff}
+.city.culture{border-left:5px solid #7a56ff}
+.city.industry{border-left:5px solid #e68a00}
+.city.occupied{background:#eaf7ea}
+.city.pickable{outline:2px dashed var(--blue)}
+.rome{font-weight:bold;padding:20px 5px;background:#eee;border-radius:50%}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.card{border:1px solid var(--line);padding:8px;border-radius:8px;background:#fff;font-size:12px}
+.sep{height:1px;background:var(--line);margin:5px 0}
+button{padding:8px;border:1px solid #aaa;border-radius:5px;background:#fff;cursor:pointer}
+button.primary{background:var(--blue);color:#fff;border:none}
+/* ...其他样式... */
+
+.ai-suggested-btn {
+    background-color: #fffde7 !important;
+    border: 3px solid #ffcc00 !important;
+    font-weight: bold !important;
+  }
