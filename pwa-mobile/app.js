@@ -2,55 +2,58 @@
 // 📜 1. 独立自然语言数据库 (UI显示专用)
 // ==========================================
 const CARD_TEXT_DB = {
-  "C01": { top: "获得 1文, 1军, 1工", bottom: "【建雕塑】耗费 1文 2工\n(结束+2分)" },
-  "C02": { top: "获得 1文, 1军, 1工", bottom: "【建引水道】耗费 1文 2工\n(结束+2分)" },
-  "C03": { top: "获得 1文, 2军", bottom: "【建要塞】耗费 1军 2工\n(军事引擎)" },
+  "C01": { top: "获得 1文 1军 1工", bottom: "【建雕塑】耗费 1文 2工\n(结束+2分)" },
+  "C02": { top: "获得 1文 1军 1工", bottom: "【引水道】耗费 1文 2工\n(结束+2分)" },
+  "C03": { top: "获得 1文 2军", bottom: "【建要塞】耗费 1军 2工\n(军事引擎)" },
   "C04": { top: "获得 3工", bottom: "【建金矿】耗费 3工\n(工业引擎)" },
-  "C05": { top: "获得 2文, 1工", bottom: "【建竞技场】耗费 1文 2工\n(文化引擎)" },
-  "C06": { top: "获得 2工", bottom: "【征服】支付=[地区数]军事\n占领1个地区" },
-  "C07": { top: "获得 1文, 1工", bottom: "【征服】支付=[地区数]军事\n占领1个地区" },
-  "C08": { top: "获得 2工", bottom: "【征收文化】\n获得=[地区数]的文化" },
-  "C09": { top: "获得 1文, 1工", bottom: "【征收工业】\n获得=[地区数]的工业" },
-  "C10": { top: "获得 1文, 1工", bottom: "【万神庙1】耗费 3文\n(建成+4分)" },
+  "C05": { top: "获得 2文 1工", bottom: "【竞技场】耗费 1文 2工\n(文化引擎)" },
+  "C06": { top: "获得 2工", bottom: "【征服】支付=[地区数]军事\n占领1地区" },
+  "C07": { top: "获得 1文 1工", bottom: "【征服】支付=[地区数]军事\n占领1地区" },
+  "C08": { top: "获得 2工", bottom: "【征收】\n获得=[地区数]文化" },
+  "C09": { top: "获得 1文 1工", bottom: "【征收】\n获得=[地区数]工业" },
+  "C10": { top: "获得 1文 1工", bottom: "【万神庙1】耗费 3文\n(建成+4分)" },
   "C11": { top: "获得 2文", bottom: "【万神庙2】耗费 3文 1工\n(建成+4分)" },
-  "C12": { top: "获得 1军, 1工", bottom: "【斗兽场1】耗费 3文\n(建成免疫入侵)" },
-  "C13": { top: "获得 2军", bottom: "【斗兽场2】耗费 1军 2工\n(建成免疫入侵)" },
-  "C14": { top: "获得 1文, 1工", bottom: "【帝国广场1】耗费 3文\n(文军互换)" },
-  "C15": { top: "获得 2文", bottom: "【帝国广场2】耗费 3工\n(文军互换)" },
-  "C16": { top: "获得 2工", bottom: "【陵寝1】耗费 1军 2工\n(按建筑数得分)" },
-  "C17": { top: "获得 1军, 1工", bottom: "【陵寝2】耗费 3文\n(按建筑数得分)" },
-  "C18": { top: "获得 1文, 1军", bottom: "【凯旋门1】耗费 3文\n(按地区数得分)" },
-  "C19": { top: "获得 2军", bottom: "【凯旋门2】耗费 1军 2工\n(按地区数得分)" },
-  "C20": { top: "获得 2工", bottom: "【市场1】耗费 1文 2工\n(按木桶短板得分)" },
-  "C21": { top: "获得 1军, 1工", bottom: "【市场2】耗费 3文\n(按木桶短板得分)" }
+  "C12": { top: "获得 1军 1工", bottom: "【斗兽场1】耗费 3文\n(免疫入侵)" },
+  "C13": { top: "获得 2军", bottom: "【斗兽场2】耗费 1军 2工\n(免疫入侵)" },
+  "C14": { top: "获得 1文 1工", bottom: "【广场1】耗费 3文\n(文军互换)" },
+  "C15": { top: "获得 2文", bottom: "【广场2】耗费 3工\n(文军互换)" },
+  "C16": { top: "获得 2工", bottom: "【陵寝1】耗费 1军 2工\n(按建筑得分)" },
+  "C17": { top: "获得 1军 1工", bottom: "【陵寝2】耗费 3文\n(按建筑得分)" },
+  "C18": { top: "获得 1文 1军", bottom: "【凯旋门1】耗费 3文\n(按地区得分)" },
+  "C19": { top: "获得 2军", bottom: "【凯旋门2】耗费 1军 2工\n(按地区得分)" },
+  "C20": { top: "获得 2工", bottom: "【市场1】耗费 1文 2工\n(按短板得分)" },
+  "C21": { top: "获得 1军 1工", bottom: "【市场2】耗费 3文\n(按短板得分)" }
 };
 
 // ==========================================
-// 🎨 2. 动态样式
+// 🎨 2. 动态样式 (核心修复：并排三张，不滑动！)
 // ==========================================
 const uiStyles = document.createElement('style');
 uiStyles.innerHTML = `
-  /* 屏蔽原本 HTML 里的旧确认按钮 */
-  #btnConfirm { display: none !important; }
-
   .modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
   .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; }
   .discard-item { padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
   
-  .hand-container { display: flex; flex-direction: column; gap: 12px; padding: 5px 0; margin-bottom: 80px; }
-  .poker-card { border: 2px solid #ccc; border-radius: 8px; background: #fff; overflow: hidden; display: flex; flex-direction: column; }
-  .card-header { background: #333; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 14px; }
-  .card-half { padding: 12px; cursor: pointer; text-align: center; border-bottom: 1px dashed #ddd; transition: 0.2s; white-space: pre-line; font-size: 14px; }
-  .card-half.disabled { opacity: 0.3; cursor: not-allowed; background: #f5f5f5; }
-  .card-half.selected { background: #e3f2fd; border: 2px solid #1976d2; font-weight: bold; box-shadow: inset 0 0 8px rgba(25,118,210,0.2); }
+  /* 🚀 核心排版：横向平分宽度，绝不出现滑动条 */
+  .hand-container { display: flex; flex-direction: row; gap: 8px; padding: 5px 0; margin-bottom: 80px; justify-content: space-between; }
   
-  .fab-confirm { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; padding: 15px; font-size: 18px; font-weight: bold; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100; }
-  .fab-confirm:active { transform: scale(0.95); background: #388e3c; }
+  /* flex: 1 1 0 保证3张牌严格平分屏幕宽度 */
+  .poker-card { flex: 1 1 0; min-width: 0; border: 2px solid #ccc; border-radius: 6px; background: #fff; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  
+  .card-header { background: #333; color: white; padding: 4px; text-align: center; font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  
+  .card-half { padding: 10px 4px; cursor: pointer; text-align: center; border-bottom: 1px dashed #ddd; transition: 0.1s; white-space: pre-line; font-size: 12px; line-height: 1.3; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+  .card-half.disabled { opacity: 0.3; cursor: not-allowed; background: #f5f5f5; }
+  .card-half.selected { background: #e3f2fd; border: 2px solid #1976d2; font-weight: bold; box-shadow: inset 0 0 5px rgba(25,118,210,0.2); }
+  
+  /* 悬浮确认大按钮 */
+  .fab-confirm { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; padding: 15px; font-size: 16px; font-weight: bold; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; }
+  .fab-confirm:active { background: #388e3c; }
 `;
 document.head.appendChild(uiStyles);
 
 // ==========================================
-// ⚙️ 3. 底层物理数据 (🚀已恢复丢失的 top 资源属性！)
+// ⚙️ 3. 底层物理数据
 // ==========================================
 const CARDS = [
   {id:"C01",name:"凯旋雕塑",class:"Building",top:{c:1,m:1,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_KaiXuanDiaoSu"}},
@@ -78,7 +81,6 @@ const CARDS = [
 
 const MONUMENTS = { M_WanShenMiao:{name:"万神庙",v:4}, M_LuoMaDouShouChang:{name:"斗兽场",v:2}, M_DiGuoGuangChang:{name:"帝国广场",v:2}, M_HaDeLiangLingQin:{name:"哈德良陵寝",v:1}, M_KaiXuanMen:{name:"凯旋门",v:1}, M_TuLaZhenShiChang:{name:"图拉真市场",v:1} };
 const BUILDINGS = { B_KaiXuanDiaoSu:{n:"凯旋雕塑"}, B_DiGuoYinShuiDao:{n:"引水道"}, B_JunTuanYaoSai:{n:"军团要塞"}, B_DiGuoJinKuang:{n:"帝国金矿"}, B_YuanXingJingJiChang:{n:"竞技场"} };
-
 const CITY_IDS = ["C1","C2","C3","I1","I2","I3"];
 const INVASIONS = [{pay:2,lose:1},{pay:3,lose:1},{pay:5,lose:2}];
 
@@ -135,22 +137,38 @@ function computeLegal(){
 
 function occupiedRegions(){ return (state.rome?1:0) + CITY_IDS.filter(id=>state.cities[id]).length; }
 function senateActive(){ return state.mono["M_DiGuoGuangChang"]>=2; }
+
 function canPay(c,m,i){
   if(state.industry<i) return false;
   return senateActive() ? (state.culture+state.military >= c+m) : (state.culture>=c && state.military>=m);
 }
+
+// 🚀 军用级硬锁：彻底解决扣出负数的物理 Bug
 function pay(c,m,i){
-  state.industry -= i;
-  if(!senateActive()){ state.culture-=c; state.military-=m; return; }
-  let need=c+m;
-  while(need>0){ if(state.culture>=state.military && state.culture>0) state.culture--; else if(state.military>0) state.military--; else state.culture--; need--; }
-}
-function addRes(type,amt){ 
-    const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; 
-    const b=state[k]; state[k]=Math.min(9,state[k]+amt); return state[k]-b; 
+  state.industry = Math.max(0, state.industry - i);
+  if(!senateActive()){ 
+      state.culture = Math.max(0, state.culture - c); 
+      state.military = Math.max(0, state.military - m); 
+      return; 
+  }
+  let need = c + m;
+  while(need > 0){ 
+      if(state.culture >= state.military && state.culture > 0) { state.culture--; need--; }
+      else if(state.military > 0) { state.military--; need--; }
+      else if(state.culture > 0) { state.culture--; need--; }
+      else { break; } // 防止死循环
+  }
 }
 
-// 完美防溢出分配
+// 🚀 军用级硬锁：绝对不允许超过 9
+function addRes(type, amt){ 
+    const k = type==="Culture" ? "culture" : type==="Military" ? "military" : "industry"; 
+    const b = state[k]; 
+    state[k] = Math.max(0, Math.min(9, state[k] + amt)); 
+    return state[k] - b; 
+}
+
+// 智能防溢出引擎
 function gainWithTriggers(g){
   let c = g.Culture || 0, m = g.Military || 0, i = g.Industry || 0;
   if(senateActive()){
@@ -173,13 +191,12 @@ function gainWithTriggers(g){
   addRes("Culture", c); addRes("Military", m); addRes("Industry", i);
 }
 
-// 📡 呼叫 AI 军师
+// 📡 通信模块
 async function fetchAIRecommendation() {
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
   if (!coachOn || legal.length === 0 || uiMode === "game_over") {
     aiBestCard = null; aiBestMode = null; aiBestMeta = {}; render(); return;
   }
-  
   isAiThinking = true; render(); 
   
   let apiUrl = "/ask_ai";
@@ -198,10 +215,14 @@ async function fetchAIRecommendation() {
 function getLegalAction(cardId, mode) {
     return legal.find(a => a.card_id === cardId && a.mode === mode);
 }
+
 function onCardHalfClick(cardId, mode) {
     if (uiMode !== "normal") return;
     const act = getLegalAction(cardId, mode);
-    if (act) { pending = act; render(); }
+    if (act) { 
+        pending = act; 
+        render(); 
+    }
 }
 
 function render(){
@@ -241,7 +262,6 @@ function render(){
     </div>
   `;
 
-  // 🏛️ 基建与奇观面板
   const builtList = state.built.map(b => `<span>✅ ${BUILDINGS[b].n}</span>`).join(" | ");
   const monoList = Object.entries(MONUMENTS).map(([k,v])=> `<span style="color:${state.mono[k]>=2?'#2e7d32':'#757575'};">${state.mono[k]>=2?'✅':'🚧'}${v.name}(${state.mono[k]}/2)</span>`).join("<br>");
   document.getElementById("monumentInfo").innerHTML = `
@@ -254,7 +274,6 @@ function render(){
   const actionArea = document.getElementById("actionArea");
   actionArea.innerHTML = "";
   
-  // 🧱 AI 军师纯文本框
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
   if (coachOn && uiMode==="normal") {
     const aiBox = document.createElement("div");
@@ -263,20 +282,19 @@ function render(){
       aiBox.innerHTML = "<b>📡 正在连接神明推演...</b>";
     } else if (aiBestCard && aiBestMode) {
       const cName = cardById(aiBestCard).name;
-      const modeStr = aiBestMode === "top" ? "【上半区】(拿资源)" : "【下半区】(执行动作)";
+      const modeStr = aiBestMode === "top" ? "【上半区】" : "【下半区】";
       let hint = "";
       if (aiBestMode === "bottom" && cardById(aiBestCard).bottom.type === "Conquest") {
           const tgt = aiBestMeta.target === "Culture" ? "文化区(C)" : (aiBestMeta.target === "Industry" ? "工业区(I)" : "任意区");
-          hint = `<br><span style='color:#d32f2f; font-weight:bold;'>🎯 战略目标：随后占领 ${tgt}</span>`;
+          hint = `<br><span style='color:#d32f2f; font-weight:bold;'>🎯 目标：占领 ${tgt}</span>`;
       }
-      aiBox.innerHTML = `<b>🤖 神明法旨：</b><br>打出：<b>${aiBestCard} ${cName}</b><br>选择：<b>${modeStr}</b>${hint}`;
+      aiBox.innerHTML = `<b>🤖 神明法旨：</b>打出 <b>${aiBestCard} ${cName}</b> 的 <b>${modeStr}</b>${hint}`;
     } else {
       aiBox.innerHTML = "<b>🤖 AI 待命 (无可用动作)</b>";
     }
     actionArea.appendChild(aiBox);
   }
 
-  // 🃏 垂直列表卡牌交互
   if(uiMode==="normal"){
     let cardsHtml = `<div class="hand-container">`;
     hand.forEach(cid => {
@@ -288,7 +306,7 @@ function render(){
 
       cardsHtml += `
         <div class="poker-card">
-            <div class="card-header">${cid} - ${cardById(cid).name}</div>
+            <div class="card-header">${cid}</div>
             <div class="card-half ${isTopLegal ? '' : 'disabled'} ${isTopPending ? 'selected' : ''}" 
                  onclick="onCardHalfClick('${cid}', 'top')">
                 ⬆️ ${dbText.top}
@@ -303,7 +321,6 @@ function render(){
     cardsHtml += `</div>`;
     document.getElementById("handArea").innerHTML = cardsHtml;
 
-    // 确认悬浮按钮
     if (pending) {
         let confirmBtn = document.getElementById("globalConfirmBtn");
         if (!confirmBtn) {
@@ -313,7 +330,7 @@ function render(){
             document.body.appendChild(confirmBtn);
         }
         confirmBtn.style.display = "block";
-        confirmBtn.innerHTML = `✅ 确认执行 (${pending.card_id})`;
+        confirmBtn.innerHTML = `✅ 确认执行 (${pending.card_id} ${pending.mode==="top"?"上半":"下半"})`;
         confirmBtn.onclick = onConfirm;
     } else {
         const confirmBtn = document.getElementById("globalConfirmBtn");
@@ -336,7 +353,6 @@ function render(){
     `;
   }
 
-  // 模态框
   let modal = document.getElementById('discardModal');
   if(!modal) {
       modal = document.createElement('div');
@@ -420,16 +436,7 @@ function checkInvasion(){
 function finishInvasionStep(){ state.inv++; state.deck=shuffle(state.discard); state.discard=[]; uiMode="normal"; nextTurn(); }
 function calcScore(){ if(state.lost) return 0; let s = occupiedRegions(); state.built.forEach(bid => { if(BUILDINGS[bid]&&BUILDINGS[bid].gp) s += BUILDINGS[bid].gp; }); Object.entries(state.mono).forEach(([mid,p])=>{ if(p>=2){ const m=MONUMENTS[mid]; if(m.name.includes("4分") || m.name.includes("互换") || m.name.includes("免疫")) s += (m.v || 2); else if(m.name.includes("每建筑")) s+=state.built.length; else if(m.name.includes("每地区")) s+=occupiedRegions(); else if(m.name.includes("木桶")) s+=Math.min(state.culture,state.military,state.industry); } }); return s; }
 
-// --- 移除自动上传的残留代码 ---
-function onExport(){
-  const payload = { source: "mobile_pwa", session_id: sessionId, final_summary: { score: calcScore(), lost: state.lost }, records: trace };
-  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`trace_${sessionId}.json`; a.click();
-}
-
 document.getElementById("btnNew").onclick = initGame;
 document.getElementById("btnUndo").onclick = onUndo;
 document.getElementById("aiCoachSwitch").onchange = fetchAIRecommendation;
-document.getElementById("btnExport").onclick = onExport; 
-
 initGame();
