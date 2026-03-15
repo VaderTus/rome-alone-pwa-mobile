@@ -26,52 +26,54 @@ const CARD_TEXT_DB = {
 };
 
 // ==========================================
-// 🎨 2. 动态样式 (移除水平滑动，采用自适应布局)
+// 🎨 2. 动态样式
 // ==========================================
 const uiStyles = document.createElement('style');
 uiStyles.innerHTML = `
+  /* 屏蔽原本 HTML 里的旧确认按钮 */
+  #btnConfirm { display: none !important; }
+
   .modal-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
   .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; }
   .discard-item { padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
   
-  /* 规规矩矩的卡牌排版 (垂直堆叠，适合手机阅读) */
-  .hand-container { display: flex; flex-direction: column; gap: 12px; padding: 5px 0; }
+  .hand-container { display: flex; flex-direction: column; gap: 12px; padding: 5px 0; margin-bottom: 80px; }
   .poker-card { border: 2px solid #ccc; border-radius: 8px; background: #fff; overflow: hidden; display: flex; flex-direction: column; }
   .card-header { background: #333; color: white; padding: 6px; text-align: center; font-weight: bold; font-size: 14px; }
   .card-half { padding: 12px; cursor: pointer; text-align: center; border-bottom: 1px dashed #ddd; transition: 0.2s; white-space: pre-line; font-size: 14px; }
   .card-half.disabled { opacity: 0.3; cursor: not-allowed; background: #f5f5f5; }
-  .card-half.selected { background: #e3f2fd; border: 2px solid #1976d2; font-weight: bold; }
+  .card-half.selected { background: #e3f2fd; border: 2px solid #1976d2; font-weight: bold; box-shadow: inset 0 0 8px rgba(25,118,210,0.2); }
   
-  /* 悬浮确认大按钮 */
   .fab-confirm { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; padding: 15px; font-size: 18px; font-weight: bold; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 100; }
+  .fab-confirm:active { transform: scale(0.95); background: #388e3c; }
 `;
 document.head.appendChild(uiStyles);
 
 // ==========================================
-// ⚙️ 3. 底层物理数据
+// ⚙️ 3. 底层物理数据 (🚀已恢复丢失的 top 资源属性！)
 // ==========================================
 const CARDS = [
-  {id:"C01",name:"凯旋雕塑",class:"Building",bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_KaiXuanDiaoSu"}},
-  {id:"C02",name:"帝国引水道",class:"Building",bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_DiGuoYinShuiDao"}},
-  {id:"C03",name:"军团要塞",class:"Building",bottom:{type:"Build_Building",cost:{c:0,m:1,i:2},ref:"B_JunTuanYaoSai"}},
-  {id:"C04",name:"帝国金矿",class:"Building",bottom:{type:"Build_Building",cost:{c:0,m:0,i:3},ref:"B_DiGuoJinKuang"}},
-  {id:"C05",name:"圆形竞技场",class:"Building",bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_YuanXingJingJiChang"}},
-  {id:"C06",name:"军团征服敕令1",class:"Action",bottom:{type:"Conquest"}},
-  {id:"C07",name:"军团征服敕令2",class:"Action",bottom:{type:"Conquest"}},
-  {id:"C08",name:"行省贡赋征召令1",class:"Action",bottom:{type:"Tribute",target:"Culture"}},
-  {id:"C09",name:"行省贡赋征召令2",class:"Action",bottom:{type:"Tribute",target:"Industry"}},
-  {id:"C10",name:"万神庙1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_WanShenMiao"}},
-  {id:"C11",name:"万神庙2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:1},ref:"M_WanShenMiao"}},
-  {id:"C12",name:"罗马斗兽场1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_LuoMaDouShouChang"}},
-  {id:"C13",name:"罗马斗兽场2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_LuoMaDouShouChang"}},
-  {id:"C14",name:"帝国广场1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_DiGuoGuangChang"}},
-  {id:"C15",name:"帝国广场2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:0,m:0,i:3},ref:"M_DiGuoGuangChang"}},
-  {id:"C16",name:"哈德良陵寝1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_HaDeLiangLingQin"}},
-  {id:"C17",name:"哈德良陵寝2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_HaDeLiangLingQin"}},
-  {id:"C18",name:"凯旋门1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_KaiXuanMen"}},
-  {id:"C19",name:"凯旋门2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_KaiXuanMen"}},
-  {id:"C20",name:"图拉真市场1",class:"Monument",bottom:{type:"Build_Monument",cost:{c:1,m:0,i:2},ref:"M_TuLaZhenShiChang"}},
-  {id:"C21",name:"图拉真市场2",class:"Monument",bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_TuLaZhenShiChang"}},
+  {id:"C01",name:"凯旋雕塑",class:"Building",top:{c:1,m:1,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_KaiXuanDiaoSu"}},
+  {id:"C02",name:"帝国引水道",class:"Building",top:{c:1,m:1,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_DiGuoYinShuiDao"}},
+  {id:"C03",name:"军团要塞",class:"Building",top:{c:1,m:2,i:0},bottom:{type:"Build_Building",cost:{c:0,m:1,i:2},ref:"B_JunTuanYaoSai"}},
+  {id:"C04",name:"帝国金矿",class:"Building",top:{c:0,m:0,i:3},bottom:{type:"Build_Building",cost:{c:0,m:0,i:3},ref:"B_DiGuoJinKuang"}},
+  {id:"C05",name:"圆形竞技场",class:"Building",top:{c:2,m:0,i:1},bottom:{type:"Build_Building",cost:{c:1,m:0,i:2},ref:"B_YuanXingJingJiChang"}},
+  {id:"C06",name:"军团征服敕令1",class:"Action",top:{c:0,m:0,i:2},bottom:{type:"Conquest"}},
+  {id:"C07",name:"军团征服敕令2",class:"Action",top:{c:1,m:0,i:1},bottom:{type:"Conquest"}},
+  {id:"C08",name:"行省贡赋征召令1",class:"Action",top:{c:0,m:0,i:2},bottom:{type:"Tribute",target:"Culture"}},
+  {id:"C09",name:"行省贡赋征召令2",class:"Action",top:{c:1,m:0,i:1},bottom:{type:"Tribute",target:"Industry"}},
+  {id:"C10",name:"万神庙1",class:"Monument",top:{c:1,m:0,i:1},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_WanShenMiao"}},
+  {id:"C11",name:"万神庙2",class:"Monument",top:{c:2,m:0,i:0},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:1},ref:"M_WanShenMiao"}},
+  {id:"C12",name:"罗马斗兽场1",class:"Monument",top:{c:0,m:1,i:1},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_LuoMaDouShouChang"}},
+  {id:"C13",name:"罗马斗兽场2",class:"Monument",top:{c:0,m:2,i:0},bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_LuoMaDouShouChang"}},
+  {id:"C14",name:"帝国广场1",class:"Monument",top:{c:1,m:0,i:1},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_DiGuoGuangChang"}},
+  {id:"C15",name:"帝国广场2",class:"Monument",top:{c:2,m:0,i:0},bottom:{type:"Build_Monument",cost:{c:0,m:0,i:3},ref:"M_DiGuoGuangChang"}},
+  {id:"C16",name:"哈德良陵寝1",class:"Monument",top:{c:0,m:0,i:2},bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_HaDeLiangLingQin"}},
+  {id:"C17",name:"哈德良陵寝2",class:"Monument",top:{c:0,m:1,i:1},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_HaDeLiangLingQin"}},
+  {id:"C18",name:"凯旋门1",class:"Monument",top:{c:1,m:1,i:0},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_KaiXuanMen"}},
+  {id:"C19",name:"凯旋门2",class:"Monument",top:{c:0,m:2,i:0},bottom:{type:"Build_Monument",cost:{c:0,m:1,i:2},ref:"M_KaiXuanMen"}},
+  {id:"C20",name:"图拉真市场1",class:"Monument",top:{c:0,m:0,i:2},bottom:{type:"Build_Monument",cost:{c:1,m:0,i:2},ref:"M_TuLaZhenShiChang"}},
+  {id:"C21",name:"图拉真市场2",class:"Monument",top:{c:0,m:1,i:1},bottom:{type:"Build_Monument",cost:{c:3,m:0,i:0},ref:"M_TuLaZhenShiChang"}},
 ];
 
 const MONUMENTS = { M_WanShenMiao:{name:"万神庙",v:4}, M_LuoMaDouShouChang:{name:"斗兽场",v:2}, M_DiGuoGuangChang:{name:"帝国广场",v:2}, M_HaDeLiangLingQin:{name:"哈德良陵寝",v:1}, M_KaiXuanMen:{name:"凯旋门",v:1}, M_TuLaZhenShiChang:{name:"图拉真市场",v:1} };
@@ -87,6 +89,8 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.rando
 let state, hand, legal, pending, trace, undoStack;
 let uiMode = "normal"; 
 let pendingConquestAction = null, pendingInvasion = null;
+
+// AI 状态
 let aiBestCard = null, aiBestMode = null, aiBestMeta = {}, isAiThinking = false; 
 
 function initGame(){
@@ -141,7 +145,12 @@ function pay(c,m,i){
   let need=c+m;
   while(need>0){ if(state.culture>=state.military && state.culture>0) state.culture--; else if(state.military>0) state.military--; else state.culture--; need--; }
 }
-function addRes(type,amt){ const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; const b=state[k]; state[k]=Math.min(9,state[k]+amt); return state[k]-b; }
+function addRes(type,amt){ 
+    const k=type==="Culture"?"culture":type==="Military"?"military":"industry"; 
+    const b=state[k]; state[k]=Math.min(9,state[k]+amt); return state[k]-b; 
+}
+
+// 完美防溢出分配
 function gainWithTriggers(g){
   let c = g.Culture || 0, m = g.Military || 0, i = g.Industry || 0;
   if(senateActive()){
@@ -164,7 +173,7 @@ function gainWithTriggers(g){
   addRes("Culture", c); addRes("Military", m); addRes("Industry", i);
 }
 
-// 📡 呼叫 AI 军师 (带智能 GPS 自适应)
+// 📡 呼叫 AI 军师
 async function fetchAIRecommendation() {
   const coachOn = document.getElementById("aiCoachSwitch") ? document.getElementById("aiCoachSwitch").checked : false;
   if (!coachOn || legal.length === 0 || uiMode === "game_over") {
@@ -173,27 +182,16 @@ async function fetchAIRecommendation() {
   
   isAiThinking = true; render(); 
   
-  // 🚀 智能判断环境：本地玩找 8000 端口，云端玩找相对路径
   let apiUrl = "/ask_ai";
   if (window.location.protocol === "file:" || window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
       apiUrl = "http://127.0.0.1:8000/ask_ai";
   }
 
   try {
-    const res = await fetch(apiUrl, { 
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ state: state, hand: hand, legal: legal }) 
-    });
+    const res = await fetch(apiUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ state: state, hand: hand, legal: legal }) });
     const data = await res.json();
-    aiBestCard = data.best_card; 
-    aiBestMode = data.best_mode; 
-    aiBestMeta = data.best_meta || {};
-  } catch (e) { 
-    console.error("❌ 无法连接 AI:", e);
-    aiBestCard = null; aiBestMode = null; aiBestMeta = {}; 
-  }
-  
+    aiBestCard = data.best_card; aiBestMode = data.best_mode; aiBestMeta = data.best_meta || {};
+  } catch (e) { aiBestCard = null; aiBestMode = null; aiBestMeta = {}; }
   isAiThinking = false; render();
 }
 
@@ -262,7 +260,7 @@ function render(){
     const aiBox = document.createElement("div");
     aiBox.style.cssText = "padding:12px; margin-bottom:15px; background:#e8f5e9; border-left:6px solid #2e7d32; color:#1b5e20;";
     if (isAiThinking) {
-      aiBox.innerHTML = "<b>📡 正在连接 V5 神明...</b>";
+      aiBox.innerHTML = "<b>📡 正在连接神明推演...</b>";
     } else if (aiBestCard && aiBestMode) {
       const cName = cardById(aiBestCard).name;
       const modeStr = aiBestMode === "top" ? "【上半区】(拿资源)" : "【下半区】(执行动作)";
@@ -422,8 +420,16 @@ function checkInvasion(){
 function finishInvasionStep(){ state.inv++; state.deck=shuffle(state.discard); state.discard=[]; uiMode="normal"; nextTurn(); }
 function calcScore(){ if(state.lost) return 0; let s = occupiedRegions(); state.built.forEach(bid => { if(BUILDINGS[bid]&&BUILDINGS[bid].gp) s += BUILDINGS[bid].gp; }); Object.entries(state.mono).forEach(([mid,p])=>{ if(p>=2){ const m=MONUMENTS[mid]; if(m.name.includes("4分") || m.name.includes("互换") || m.name.includes("免疫")) s += (m.v || 2); else if(m.name.includes("每建筑")) s+=state.built.length; else if(m.name.includes("每地区")) s+=occupiedRegions(); else if(m.name.includes("木桶")) s+=Math.min(state.culture,state.military,state.industry); } }); return s; }
 
+// --- 移除自动上传的残留代码 ---
+function onExport(){
+  const payload = { source: "mobile_pwa", session_id: sessionId, final_summary: { score: calcScore(), lost: state.lost }, records: trace };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`trace_${sessionId}.json`; a.click();
+}
+
 document.getElementById("btnNew").onclick = initGame;
 document.getElementById("btnUndo").onclick = onUndo;
 document.getElementById("aiCoachSwitch").onchange = fetchAIRecommendation;
-document.getElementById("btnToggleMonument").onclick = () => {}; 
+document.getElementById("btnExport").onclick = onExport; 
+
 initGame();
